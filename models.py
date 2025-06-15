@@ -23,7 +23,6 @@ class Admin(db.Model):
     
     admin_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
 
-# AUTHENTICATION Table
 class Authentication(db.Model):
     _tablename_ = 'authentication'
     
