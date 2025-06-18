@@ -1,92 +1,109 @@
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 db = SQLAlchemy()
 
-# USER Table
-class User(db.Model):
-    _tablename_ = 'user'
-    
-    user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)
-    role = db.Column(db.String, nullable=False)
 
-    # Relationships
-    feedbacks = db.relationship('Feedback', backref='user', lazy=True)
-    auth_sessions = db.relationship('Authentication', backref='user', lazy=True)
+# User table
+class User(db.Model):
+    __tablename__ = 'user'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    
     question_papers = db.relationship('QuestionPaper', backref='user', lazy=True)
 
-# ADMIN inherits from USER
-class Admin(db.Model):
-    _tablename_ = 'admin'
-    
-    admin_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
 
-class Authentication(db.Model):
-    _tablename_ = 'authentication'
-    
-    session_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    login_time = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String)
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
-# FEEDBACK Table
-class Feedback(db.Model):
-    _tablename_ = 'feedback'
-    
-    feedback_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    subject = db.Column(db.String)
-    message = db.Column(db.String, nullable=False)
-    submitted_at = db.Column(db.Date, default=datetime.utcnow)
 
-# QUESTION_BANK Table
+# Subject table
+class Subject(db.Model):
+    __tablename__ = 'subject'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    
+    question_banks = db.relationship('QuestionBank', backref='subject', lazy=True)
+
+
+# Question Bank table
 class QuestionBank(db.Model):
-    _tablename_ = 'question_bank'
+    __tablename__ = 'question_bank'
     
-    bank_id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String, nullable=False)
-    description = db.Column(db.String)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
+    
+    questions = db.relationship('Question', backref='question_bank', lazy=True)
+    question_papers = db.relationship('QuestionPaper', backref='question_bank', lazy=True)
 
-    # Many-to-many with Question
-    questions = db.relationship('Question', secondary='bank_question', backref='banks')
 
-# QUESTION Table
+# Question table
 class Question(db.Model):
-    _tablename_ = 'question'
+    __tablename__ = 'question'
     
-    question_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
-    subject = db.Column(db.String, nullable=False)
-    topic = db.Column(db.String)
-    difficulty = db.Column(db.String)
-    type = db.Column(db.String)
+    difficulty = db.Column(db.String(10), nullable=False)  # 'easy', 'medium', 'hard'
+    type = db.Column(db.String)  # MCQ, Descriptive, etc.
     correct_answer = db.Column(db.String)
+    
+    question_bank_id = db.Column(db.Integer, db.ForeignKey('question_bank.id'), nullable=False)
 
-# QUESTION_PAPER Table
+
+# Question Paper table
 class QuestionPaper(db.Model):
-    _tablename_ = 'question_paper'
+    __tablename__ = 'question_paper'
     
-    paper_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    generation_date = db.Column(db.Date, default=datetime.utcnow)
-    subject = db.Column(db.String, nullable=False)
-    difficulty_level = db.Column(db.String)
-
-    # Many-to-many with Question
-    questions = db.relationship('Question', secondary='paper_question', backref='papers')
-
-# BANK_QUESTION (Junction Table)
-class BankQuestion(db.Model):
-    _tablename_ = 'bank_question'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    difficulty = db.Column(db.String(10), nullable=False)
+    generation_date = db.Column(db.DateTime, default=datetime.utcnow)
     
-    bank_id = db.Column(db.Integer, db.ForeignKey('question_bank.bank_id'), primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), primary_key=True)
-
-# PAPER_QUESTION (Junction Table)
-class PaperQuestion(db.Model):
-    _tablename_ = 'paper_question'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    question_bank_id = db.Column(db.Integer, db.ForeignKey('question_bank.id'), nullable=False)
     
-    paper_id = db.Column(db.Integer, db.ForeignKey('question_paper.paper_id'), primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), primary_key=True)
+    questions = db.relationship('QuestionPaperQuestion', backref='question_paper', lazy=True)
+
+
+# Junction table: Question Paper <-> Question
+class QuestionPaperQuestion(db.Model):
+    __tablename__ = 'question_paper_question'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    question_paper_id = db.Column(db.Integer, db.ForeignKey('question_paper.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
+    
+    question = db.relationship('Question')
+
+
+# Setup function to initialize the database and create default admin
+def setup_database(app_instance, db_instance):
+    with app_instance.app_context():
+        db_instance.create_all()
+        print("Database tables created or verified.")
+
+        # Check if admin already exists
+        admin_user = User.query.filter_by(username="admin", is_admin=True).first()
+        if not admin_user:
+            predefined_admin = User(
+                username="admin",
+                is_admin=True
+            )
+            predefined_admin.set_password("admin")  # Secure password
+            db_instance.session.add(predefined_admin)
+            try:
+                db_instance.session.commit()
+                print("Admin user created successfully.")
+            except Exception as e:
+                db_instance.session.rollback()
+                print(f"Failed to create admin user: {e}")
+        else:
+            print("Admin user already exists.")
