@@ -31,6 +31,7 @@ class Subject(db.Model):
     name = db.Column(db.String(100), nullable=False)
     
     question_banks = db.relationship('QuestionBank', backref='subject', lazy=True)
+    question_papers = db.relationship('QuestionPaper', backref='subject', lazy=True)
 
 
 # Question Bank table
@@ -42,7 +43,6 @@ class QuestionBank(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
     
     questions = db.relationship('Question', backref='question_bank', lazy=True)
-    question_papers = db.relationship('QuestionPaper', backref='question_bank', lazy=True)
 
 
 # Question table
@@ -68,7 +68,7 @@ class QuestionPaper(db.Model):
     generation_date = db.Column(db.DateTime, default=datetime.utcnow)
     
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    question_bank_id = db.Column(db.Integer, db.ForeignKey('question_bank.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
     
     questions = db.relationship('QuestionPaperQuestion', backref='question_paper', lazy=True)
 
