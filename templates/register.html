@@ -25,7 +25,7 @@ Register - Question Paper Generator
                         {% endif %}
                     {% endwith %}
 
-                    <form action="{{ url_for('register') }}" method="POST" >
+                    <form action="{{ url_for('register') }}" method="POST">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username:</label>
                             <input type="text" id="username" name="username" class="form-control" required>
@@ -41,14 +41,15 @@ Register - Question Paper Generator
                             <input type="text" id="full_name" name="full_name" class="form-control">
                         </div>
 
-                        
+                        <div class="mb-3">
+                            <label for="pin_code" class="form-label">Pin Code (Optional):</label>
+                            <input type="text" id="pin_code" name="pin_code" class="form-control">
+                        </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input type="password" id="password" name="password" class="form-control" required>
                         </div>
-
-                       
 
                         <button type="submit" class="btn btn-success w-100 mt-3">Register</button>
                     </form>
