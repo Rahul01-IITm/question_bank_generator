@@ -11,6 +11,9 @@ class User(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)         # New
+    full_name = db.Column(db.String(100))                                   # New
+    pin_code = db.Column(db.String(10))                                     # New
     password = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     
@@ -21,6 +24,7 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
 
 
 # Subject table

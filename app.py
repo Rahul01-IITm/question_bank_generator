@@ -12,6 +12,7 @@ db.init_app(app)
 
 import models
 import controllers.admin_routes
+import controllers.user_routes
 import controllers.authentication
 
 from models import setup_database 
