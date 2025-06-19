@@ -52,60 +52,60 @@ def login():
 
 
 
-# # Registration route
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if session.get("id"):
-#         flash('You are already logged in.', 'info')
-#         return redirect(url_for('admin_dashboard' if session['role'] == 'admin' else 'user_dashboard'))
+# Registration route
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if session.get("id"):
+        flash('You are already logged in.', 'info')
+        return redirect(url_for('admin_dashboard' if session['role'] == 'admin' else 'user_dashboard'))
 
-#     if request.method == 'POST':
-#         username = request.form.get('username')
-#         email = request.form.get('email')
-#         full_name = request.form.get('full_name')
-#         pin_code = request.form.get('pin_code')
-#         password = request.form.get('password')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        full_name = request.form.get('full_name')
+        pin_code = request.form.get('pin_code')
+        password = request.form.get('password')
 
-#         if not username or not email or not password:
-#             flash('Username, Email, and Password are required.')
-#             return render_template('register.html')
+        if not username or not email or not password:
+            flash('Username, Email, and Password are required.')
+            return render_template('register.html')
 
-#         if len(password) < 6:
-#             flash('Password must be at least 6 characters.')
-#             return render_template('register.html')
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.')
+            return render_template('register.html')
 
-#         if User.query.filter_by(username=username).first():
-#             flash('Username already exists.')
-#             return render_template('register.html')
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists.')
+            return render_template('register.html')
 
-#         if User.query.filter_by(email=email).first():
-#             flash('Email already registered.')
-#             return render_template('register.html')
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered.')
+            return render_template('register.html')
 
-#         if pin_code and User.query.filter_by(pin_code=pin_code).first():
-#             flash('Pin code already in use.')
-#             return render_template('register.html')
+        if pin_code and User.query.filter_by(pin_code=pin_code).first():
+            flash('Pin code already in use.')
+            return render_template('register.html')
 
-#         new_user = User(
-#             username=username,
-#             email=email,
-#             full_name=full_name or None,
-#             pin_code=pin_code or None,
-#             is_admin=False
-#         )
-#         new_user.set_password(password)
+        new_user = User(
+            username=username,
+            email=email,
+            full_name=full_name or None,
+            pin_code=pin_code or None,
+            is_admin=False
+        )
+        new_user.set_password(password)
 
-#         try:
-#             db.session.add(new_user)
-#             db.session.commit()
-#             flash('Registration successful. Please log in.', 'success')
-#             return redirect(url_for('login'))
-#         except Exception as e:
-#             db.session.rollback()
-#             flash(f'Error during registration: {e}', 'danger')
-#             return render_template('register.html')
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful. Please log in.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error during registration: {e}', 'danger')
+            return render_template('register.html')
 
-#     return render_template('register.html')
+    return render_template('register.html')
 
 
 # # Logout route
