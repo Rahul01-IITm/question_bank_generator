@@ -1,0 +1,33 @@
+{% extends 'admin_templates/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="question-banks-wrapper">
+  <div>
+    <h3 class="section-title">Question Banks</h3>
+    <div class="d-flex gap-3">
+      {% for bank in question_banks %}
+      <div class="bank-card">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-body-text"></i>
+          </a>
+          <span class="edit-delete-label">edit/delete</span>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href>Edit</a></li>
+            <li><a class="dropdown-item" href>Delete</a></li>
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <a href class="btn btn-add-bank align-self-center">+ Add Question Bank</a>
+</div>
+
+<div class="action-buttons d-flex flex-column align-items-center gap-3">
+  <a href class="btn btn-view-paper">View Question Paper</a>
+  <a href class="btn btn-add-questions">+ Add Questions</a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'user_templates/base.html' %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 text-center" style="border: 2px solid #ffc107;">
+    <div class="container-fluid py-5">
+        <!-- The "Welcome {name}" from your wireframe -->
+        <h1 class="display-5 fw-bold">Welcome, {{user.full_name or current_user.username }}!</h1>
+        <p class="fs-4">What would you like to do today?</p>
+    </div>
+</div>
+
+<!-- Search Bar (Improvement on "Search Question Paper/Dropdown list") -->
+<div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+        <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search for existing question papers..." aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<!-- Main Action Cards -->
+<div class="row align-items-md-stretch">
+    <!-- Card for Viewing Papers -->
+    <div class="col-md-6 mb-4">
+        <div class="h-100 p-5 text-white bg-primary rounded-3">
+            <h2>View Papers</h2>
+            <p>Browse, view, and download previously generated question papers and previous year questions (PYQs).</p>
+            <a href class="btn btn-outline-light" type="button">View Question Papers</a>
+        </div>
+    </div>
+    <!-- Card for Generating a new Paper -->
+    <div class="col-md-6 mb-4">
+        <div class="h-100 p-5 bg-secondary text-white rounded-3">
+            <h2>Generate New Paper</h2>
+            <p>Create a brand new question paper by selecting subjects, topics, and difficulty levels.</p>
+            <a href class="btn btn-outline-light" type="button">Generate Question Paper</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

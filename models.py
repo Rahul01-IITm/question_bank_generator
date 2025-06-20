@@ -15,7 +15,8 @@ class User(db.Model):
     full_name = db.Column(db.String(100))                                   # New
     pin_code = db.Column(db.String(10))                                     # New
     password = db.Column(db.String(100), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
+
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
     
     question_papers = db.relationship('QuestionPaper', backref='user', lazy=True)
 
@@ -99,6 +100,9 @@ def setup_database(app_instance, db_instance):
         if not admin_user:
             predefined_admin = User(
                 username="admin",
+                email="admin@example.com",
+                full_name="Admin User",
+                pin_code="000000",
                 is_admin=True
             )
             predefined_admin.set_password("admin")  # Secure password

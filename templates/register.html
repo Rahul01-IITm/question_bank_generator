@@ -1,65 +1,72 @@
-{% extends 'index.html' %}
+{% extends "index.html" %}
 
-{% block title %}
-Register - Question Paper Generator
+{% block title %}Register - Question Paper Generator{% endblock %}
+
+{% block styles %}
+<style>
+  /* Child-specific styles */
+  .register-container {
+    max-width: 500px;
+    margin: 6vh auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .form-group + .form-group {
+    margin-top: 1rem;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Register New User</h2>
+<div class="register-container">
+  <h1 class="text-center mb-4">Create an Account</h1>
 
-                    {# Flash messages display here #}
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            <div class="mt-3 mb-3">
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }}" role="alert">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% endwith %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-                    <form action="{{ url_for('register') }}" method="POST">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username:</label>
-                            <input type="text" id="username" name="username" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="full_name" class="form-label">Full Name (Optional):</label>
-                            <input type="text" id="full_name" name="full_name" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="pin_code" class="form-label">Pin Code (Optional):</label>
-                            <input type="text" id="pin_code" name="pin_code" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" id="password" name="password" class="form-control" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100 mt-3">Register</button>
-                    </form>
-
-                    <p class="text-center mt-3">
-                        Already have an account? <a href="{{ url_for('login') }}">Login here</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+  <form method="post" action="{{ url_for('register') }}">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" class="form-control" required>
     </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email"class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="full_name">Full Name</label>
+      <input type="text" id="full_name" name="full_name" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="pin_code">PIN Code (e.g., Zip Code)</label>
+      <input type="text" id="pin_code" name="pin_code" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-4">Register</button>
+  </form>
+  
+  <p class="text-center mt-3">
+    Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+  </p>
 </div>
 {% endblock %}

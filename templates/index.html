@@ -1,57 +1,60 @@
 <!doctype html>
 <html lang="en" class="h-100">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
-    <!-- Default Title (can be overridden by child templates) -->
-    <title>{% block title %}Question Paper Generator{% endblock %}</title>
 
-    <style>
-      /* Base styles for the entire site */
-      body {
-        background-color: #f8f9fa;
-      }
-      
-      /* Make sure the main content area can grow and shrink */
-      .main-content {
-        flex: 1;
-      }
-    </style>
-    
-    <!-- Placeholder for page-specific styles -->
-    {% block styles %}{% endblock %}
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Default Title (can be overridden by child templates) -->
+  <title>{% block title %}Question Paper Generator{% endblock %}</title>
+
+  <style>
+    /* Base styles for the entire site */
+    body {
+      background-color: #f8f9fa;
+    }
+
+    /* Make sure the main content area can grow and shrink */
+    .main-content {
+      flex: 1;
+    }
+  </style>
+
+  <!-- Placeholder for page-specific styles -->
+  {% block styles %}{% endblock %}
 </head>
+
 <body class="d-flex flex-column h-100">
 
-    <!-- Navbar - This will appear on every page -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-        <div class="container">
-          <a class="navbar-brand fw-bold" href= >QPG System</a>
-          <div class="ms-auto">
-            <a href="{{url_for('login')}}" class="btn btn-outline-primary me-2" role="button">Login</a>
-            <a href="{{url_for('register')}}" class="btn btn-primary" role="button">Register</a>
-          </div>
-        </div>
-    </nav>
+  <!-- Navbar - This will appear on every page -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+    <div class="container">
+      <div class="ms-auto">
+        <a href="{{url_for('login')}}" class="btn btn-outline-primary me-2">Login</a>
+        <a href="{{url_for('register')}}" class="btn btn-primary">Register</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Main Content Block - This is where child templates will inject their content -->
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
+  <!-- Main Content Block - This is where child templates will inject their content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
 
-    <!-- Footer - This will appear on every page -->
-    <footer class="footer mt-auto py-3 bg-white border-top">
-        <div class="container text-center">
-            <span class="text-muted">
-                © {{ current_year }} @ Question Paper Generator System. All Rights Reserved.
-            </span>
-        </div>
-    </footer>
+  <!-- Footer - This will appear on every page -->
+  <footer class="footer mt-auto py-3 bg-white border-top">
+    <div class="container text-center">
+      <span class="text-muted">
+        © {{ current_year }} Question Paper Generator System. All Rights Reserved.
+      </span>
+    </div>
+  </footer>
 
 </body>
+
 </html>

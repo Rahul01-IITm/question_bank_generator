@@ -4,7 +4,6 @@
 
 {% block styles %}
 <style>
-    /* Styles specific to the login page */
     .login-container {
         max-width: 400px;
         margin-top: 8vh;
@@ -16,38 +15,37 @@
 </style>
 {% endblock %}
 
-
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="login-container">
                 <h2 class="text-center mb-4">Sign In</h2>
-                
-                <form>
-                    <!-- Email Input -->
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('login') }}" method="POST">
+                    <!-- Username Input -->
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
-                        <label for="floatingInput">Email address</label>
+                        <input type="text" class="form-control" id="floatingUsername" name="username" placeholder="Your username" required>
+                        <label for="floatingUsername">Username</label>
                     </div>
-                    
+
                     <!-- Password Input -->
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
-                    
-                    <!-- Remember Me Checkbox & Forgot Password -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">
-                                Remember me
-                            </label>
-                        </div>
-                        <a href="#" class="text-decoration-none">Forgot password?</a>
-                    </div>
-                    
+
                     <!-- Submit Button -->
                     <div class="d-grid">
                         <button class="btn btn-primary btn-lg" type="submit">Login</button>
@@ -55,9 +53,8 @@
                 </form>
 
                 <hr class="my-4">
-
                 <div class="text-center">
-                    <p class="mb-0">Don't have an account? <a href="{{url_for('register')}}" class="text-decoration-none">Sign up</a></p>
+                    <p class="mb-0">Don't have an account? <a href="{{ url_for('register') }}" class="text-decoration-none">Sign up</a></p>
                 </div>
             </div>
         </div>
