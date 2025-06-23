@@ -14,15 +14,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # If user is already logged in, redirect based on role
-    if "id" in session and "role" in session:
-        flash('You are already logged in.', 'info')
-        if session.get("role") == "admin":
-            return redirect(url_for('admin_dashboard'))
-        elif session.get("role") == "user":
-            return redirect(url_for('user_dashboard'))
-        return redirect(url_for('index'))
-
+    
     if request.method == 'POST':
         username_or_email = request.form.get('username')
         password = request.form.get('password')
@@ -35,7 +27,7 @@ def login():
 
         if user and user.check_password(password):
             # Set session
-            session['id'] = user.id
+            session['user_id'] = user.id
             session['role'] = 'admin' if user.is_admin else 'user'
             session.permanent = remember
 
@@ -117,11 +109,9 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/logout', methods=["POST","GET"])
+@app.route('/logout', methods=["POST", "GET"])
 def logout():
-    if "id" in session:
-        session.pop("id")
-    if "role" in session:
-        session.pop("role")
-
+    session.pop("user_id", None)
+    session.pop("role", None)
     return redirect(url_for("login"))
+

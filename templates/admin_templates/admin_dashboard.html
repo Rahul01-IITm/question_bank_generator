@@ -6,28 +6,53 @@
 <div class="question-banks-wrapper">
   <div>
     <h3 class="section-title">Question Banks</h3>
-    <div class="d-flex gap-3">
+
+    {% if question_banks %}
+    <div class="d-flex gap-3 flex-wrap">
       {% for bank in question_banks %}
       <div class="bank-card">
         <div class="dropdown">
-          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <a href class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-body-text"></i>
           </a>
           <span class="edit-delete-label">edit/delete</span>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href>Edit</a></li>
-            <li><a class="dropdown-item" href>Delete</a></li>
+            <li><a class="dropdown-item text-warning" href>Edit</a></li>
+            <li><a class="dropdown-item text-danger" href>Delete</a></li>
           </ul>
         </div>
       </div>
       {% endfor %}
     </div>
+    {% else %}
+    <p class="text-muted">No question banks available.</p>
+    {% endif %}
   </div>
-  <a href class="btn btn-add-bank align-self-center">+ Add Question Bank</a>
+
+  {% if subjects %}
+    <a href class="btn btn-success align-self-center mt-3">+ Add Question Bank</a>
+  {% else %}
+    <div class="alert alert-warning text-center mt-3" role="alert">
+      Please add a subject first to create a question bank.
+    </div>
+  {% endif %}
 </div>
 
-<div class="action-buttons d-flex flex-column align-items-center gap-3">
-  <a href class="btn btn-view-paper">View Question Paper</a>
-  <a href class="btn btn-add-questions">+ Add Questions</a>
+<hr>
+
+<div class="action-buttons d-flex flex-column align-items-center gap-3 mt-4">
+  {% if subjects %}
+    <a href class="btn btn-primary">View Question Paper</a>
+    <a href class="btn btn-info text-white">+ Add Questions</a>
+  {% else %}
+    <a href class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">View Question Paper</a>
+    <a href class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">+ Add Questions</a>
+  {% endif %}
+</div>
+
+<hr>
+
+<div class="text-center mt-4">
+  <a href="{{url_for('add_subject')}}" class="btn btn-outline-primary">+ Add Subject</a>
 </div>
 {% endblock %}
