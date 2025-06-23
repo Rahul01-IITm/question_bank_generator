@@ -12,4 +12,4 @@ def admin_dashboard():
         return redirect(url_for('login'))
 
     # Otherwise, allow dashboard rendering
-    return render_template('admin_templates/admin_dashboard.html')
+    return render_template('admin_templates/admin_dashboard.html',current_year=datetime.now().year)

@@ -54,7 +54,7 @@ def login():
         flash('Invalid username or password. Please try again.', 'danger')
 
     # For GET request or failed POST
-    return render_template('login.html')
+    return render_template('login.html',current_year=datetime.now().year)
 
 
 
