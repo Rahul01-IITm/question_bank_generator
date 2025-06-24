@@ -30,7 +30,7 @@
   </div>
 
   {% if subjects %}
-    <a href class="btn btn-success align-self-center mt-3">+ Add Question Bank</a>
+    <a href="{{url_for('add_questionbank')}}" class="btn btn-success align-self-center mt-3">+ Add Question Bank</a>
   {% else %}
     <div class="alert alert-warning text-center mt-3" role="alert">
       Please add a subject first to create a question bank.
@@ -43,7 +43,7 @@
 <div class="action-buttons d-flex flex-column align-items-center gap-3 mt-4">
   {% if subjects %}
     <a href class="btn btn-primary">View Question Paper</a>
-    <a href class="btn btn-info text-white">+ Add Questions</a>
+    <a href="{{url_for('add_questions')}}" class="btn btn-info text-white">+ Add Questions</a>
   {% else %}
     <a href class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">View Question Paper</a>
     <a href class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">+ Add Questions</a>

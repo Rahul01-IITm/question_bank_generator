@@ -1,0 +1,35 @@
+{% extends 'admin_templates/base.html' %}
+
+{% block title %}Add Question Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Add Question Bank</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('add_questionbank') }}">
+        <div class="mb-3">
+            <label for="subject_name" class="form-label">Subject Name</label>
+            <input type="text" class="form-control" id="subject_name" name="subject_name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="question_bank_name" class="form-label">Question Bank Name</label>
+            <input type="text" class="form-control" id="question_bank_name" name="question_bank_name" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Question Bank</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back</a>
+    </form>
+</div>
+{% endblock %}
