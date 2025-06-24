@@ -7,11 +7,12 @@ from sqlalchemy import func
 
 
 @app.route('/admin_dashboard')
+@adminlogin_required
 def admin_dashboard():
     # Session-based admin access check
-    if 'user_id' not in session or session.get('role') != 'admin':
-        flash('Access denied. Please login as admin.', 'danger')
-        return redirect(url_for('login'))
+    # if 'user_id' not in session or session.get('role') != 'admin':
+    #     flash('Access denied. Please login as admin.', 'danger')
+    #     return redirect(url_for('login'))
 
     
     subjects = Subject.query.all()
