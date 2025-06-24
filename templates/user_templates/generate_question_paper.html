@@ -1,0 +1,54 @@
+{% extends 'user_templates/base.html' %}
+{% block title %}Generate Question Paper{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Generate Question Paper</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('generate_question_paper') }}">
+        <div class="mb-3">
+            <label for="title" class="form-label">Paper Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="subject" class="form-label">Select Subject</label>
+            <select class="form-select" id="subject" name="subject_id" required>
+                <option value="">-- Select a Subject --</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty</label>
+            <select class="form-select" id="difficulty" name="difficulty" required>
+                <option value="">-- Select Difficulty --</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="num_questions" class="form-label">Number of Questions</label>
+            <input type="number" class="form-control" id="num_questions" name="num_questions" min="1" value="10" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Generate</button>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
