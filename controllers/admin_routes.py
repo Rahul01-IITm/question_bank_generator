@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template,request,redirect, url_for, flash, session
 from controllers.rbac import  adminlogin_required
-from models import db, Subject, QuestionBank, Question 
+from models import db, Subject, QuestionBank, Question, User 
 from datetime import datetime
 from sqlalchemy import func
 
@@ -137,3 +137,11 @@ def add_questions():
         'admin_templates/add_questions.html',
         question_banks=question_banks
     )
+
+
+@app.route('/user_information')
+@adminlogin_required
+def user_information():
+    users = User.query.all()
+    return render_template('admin_templates/user_information.html', users=users)
+

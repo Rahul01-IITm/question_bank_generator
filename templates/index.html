@@ -19,7 +19,7 @@
       background-color: #f8f9fa;
     }
 
-    /* Make sure the main content area can grow and shrink */
+
     .main-content {
       flex: 1;
     }
@@ -34,6 +34,7 @@
   <!-- Navbar - This will appear on every page -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
     <div class="container">
+      <a class="navbar-brand fw-bold text-primary fs-4" href="{{ url_for('login') }}">QPG</a>
       <div class="ms-auto">
         <a href="{{url_for('login')}}" class="btn btn-outline-primary me-2">Login</a>
         <a href="{{url_for('register')}}" class="btn btn-primary">Register</a>
