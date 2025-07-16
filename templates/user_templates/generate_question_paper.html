@@ -53,9 +53,10 @@
                             <input type="range" class="form-range" id="num_8marks" name="num_8marks" min="0" max="30" value="5" oninput="updateValue('num_8marks', 'val_8marks')">
                         </div>
 
-                        <!-- Total Marks Display -->
+                        <!-- ✅ Total Marks Display (Visible + Hidden) -->
                         <div class="mt-4 p-3 bg-light rounded border text-center">
                             <h5 class="mb-0">Total Marks: <span id="total_marks" class="fw-bold text-success">50</span></h5>
+                            <input type="hidden" name="total_marks" id="total_marks_input" value="50">
                         </div>
                     </div>
                 </div>
@@ -92,6 +93,7 @@
         const num8Marks = parseInt(document.getElementById('num_8marks').value, 10);
         const total = (num2Marks * 2) + (num8Marks * 8);
         document.getElementById('total_marks').innerText = total;
+        document.getElementById('total_marks_input').value = total;
     }
 
     // Initialize total marks when the page loads

@@ -35,6 +35,7 @@ def generate_question_paper():
         difficulty = request.form.get('difficulty')
         num_2marks = request.form.get('num_2marks', type=int)
         num_8marks = request.form.get('num_8marks', type=int)
+        total_marks = request.form.get('total_marks',type=int)
 
         if not all([title, subject_id, difficulty]) or num_2marks is None or num_8marks is None:
             flash("All fields are required.", "danger")
@@ -68,10 +69,11 @@ def generate_question_paper():
             title=title,
             subject_id=subject_id,
             difficulty=difficulty,
+            total_marks=total_marks,
             user_id=session.get('user_id')
         )
         db.session.add(new_paper)
-        db.session.commit()  # To assign ID
+        db.session.commit()  
 
         # Link questions
         for question in selected_questions:
@@ -91,7 +93,7 @@ def generate_question_paper():
         user = User.query.get(session.get('user_id'))
 
         flash("Question Paper generated successfully!", "success")
-        return render_template('user_templates/display_generated_paper.html', paper=paper, questions=linked_questions, user=user)
+        return render_template('user_templates/display_generated_paper.html', paper=paper,total_marks=total_marks, questions=linked_questions, user=user)
 
     # GET method – show form
     subjects = Subject.query.order_by(Subject.name).all()

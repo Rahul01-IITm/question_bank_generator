@@ -72,6 +72,7 @@ class QuestionPaper(db.Model):
     title = db.Column(db.String(100), nullable=False)
     difficulty = db.Column(db.String(10), nullable=False)
     generation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    total_marks = db.Column(db.Integer, nullable=False)
     
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
