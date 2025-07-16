@@ -19,8 +19,13 @@
 
     <form method="POST" action="{{ url_for('add_questionbank') }}">
         <div class="mb-3">
-            <label for="subject_name" class="form-label">Subject Name</label>
-            <input type="text" class="form-control" id="subject_name" name="subject_name" required>
+            <label for="subject_name" class="form-label">Select Subject</label>
+            <select class="form-select" id="subject_name" name="subject_name" required>
+                <option value="" selected disabled>Select a subject</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.name }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
         </div>
 
         <div class="mb-3">

@@ -11,9 +11,9 @@ class User(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)         # New
-    full_name = db.Column(db.String(100))                                   # New
-    pin_code = db.Column(db.String(10))                                     # New
+    email = db.Column(db.String(100), unique=True, nullable=False)        
+    full_name = db.Column(db.String(100))                                  
+    pin_code = db.Column(db.String(10))                                    
     password = db.Column(db.String(100), nullable=False)
 
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -50,17 +50,18 @@ class QuestionBank(db.Model):
     questions = db.relationship('Question', backref='question_bank', lazy=True)
 
 
-# Question table
+# Question table (Updated for descriptive questions only with 2 or 8 marks)
 class Question(db.Model):
     __tablename__ = 'question'
     
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
-    difficulty = db.Column(db.String(10), nullable=False)  # 'easy', 'medium', 'hard'
-    type = db.Column(db.String)  # MCQ, Descriptive, etc.
-    correct_answer = db.Column(db.String)
+    difficulty = db.Column(db.String(10), nullable=False)  # Easy, Medium, Hard
+    
+    marks = db.Column(db.Integer, nullable=False)  # Only values allowed: 2 or 8
     
     question_bank_id = db.Column(db.Integer, db.ForeignKey('question_bank.id'), nullable=False)
+
 
 
 # Question Paper table
@@ -105,7 +106,7 @@ def setup_database(app_instance, db_instance):
                 pin_code="000000",
                 is_admin=True
             )
-            predefined_admin.set_password("admin")  # Secure password
+            predefined_admin.set_password("admin")  
             db_instance.session.add(predefined_admin)
             try:
                 db_instance.session.commit()

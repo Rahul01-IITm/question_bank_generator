@@ -63,7 +63,7 @@ def add_questionbank():
             flash('Both fields are required.', 'danger')
             return redirect(url_for('add_questionbank'))
 
-        # Normalize inputs to lowercase for comparison
+        
         subject = Subject.query.filter(func.lower(Subject.name) == subject_name_input.lower()).first()
 
         if not subject:
@@ -87,8 +87,8 @@ def add_questionbank():
 
         flash('Question bank added successfully.', 'success')
         return redirect(url_for('admin_dashboard'))
-
-    return render_template('admin_templates/add_questionbank.html')
+    subjects = Subject.query.order_by(Subject.name).all()
+    return render_template('admin_templates/add_questionbank.html',subjects=subjects)
 
 
 
