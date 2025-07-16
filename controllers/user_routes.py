@@ -1,8 +1,9 @@
 from app import app
-from flask import render_template,request,redirect, url_for, flash, session, make_response,send_file
+from flask import render_template,request,redirect, url_for, flash, session,send_file
 from controllers.rbac import  userlogin_required
 from models import db, User, QuestionPaperQuestion,Question, QuestionBank, QuestionPaper, Subject
-from datetime import datetime
+from datetime import datetime 
+from zoneinfo import ZoneInfo
 import random
 from xhtml2pdf import pisa
 import io
@@ -11,10 +12,7 @@ import io
 @app.route('/user_dashboard')
 @userlogin_required
 def user_dashboard():
-    # if 'user_id' not in session or session.get('role') != 'user':
-    #     flash('Access denied. Please login as a user.', 'danger')
-    #     return redirect(url_for('login'))
-
+    
     id = session.get('user_id')
     user = User.query.get(id)
 
@@ -70,7 +68,8 @@ def generate_question_paper():
             subject_id=subject_id,
             difficulty=difficulty,
             total_marks=total_marks,
-            user_id=session.get('user_id')
+            user_id=session.get('user_id'),
+            generation_date=datetime.now(ZoneInfo("Asia/Kolkata"))
         )
         db.session.add(new_paper)
         db.session.commit()  
@@ -81,7 +80,7 @@ def generate_question_paper():
                 question_paper_id=new_paper.id,
                 question_id=question.id
             ))
-        db.session.commit()
+        db.session.commit()      
 
         # Display result
         paper = QuestionPaper.query.get(new_paper.id)
@@ -92,8 +91,14 @@ def generate_question_paper():
         ).all()
         user = User.query.get(session.get('user_id'))
 
+        # After querying `linked_questions`
+        group_a = [q for q in linked_questions if q.marks == 2]
+        group_b = [q for q in linked_questions if q.marks == 8]
+
+
+
         flash("Question Paper generated successfully!", "success")
-        return render_template('user_templates/display_generated_paper.html', paper=paper,total_marks=total_marks, questions=linked_questions, user=user)
+        return render_template('user_templates/display_generated_paper.html', paper=paper, group_a=group_a, group_b=group_b, total_marks=total_marks, questions=linked_questions, user=user)
 
     # GET method – show form
     subjects = Subject.query.order_by(Subject.name).all()
