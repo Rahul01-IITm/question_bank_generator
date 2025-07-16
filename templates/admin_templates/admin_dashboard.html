@@ -29,7 +29,9 @@
 
     {% if question_banks %}
     <div class="d-flex gap-3 flex-wrap">
+
       {% for bank in question_banks %}
+
       <div class="position-relative">
         <div class="dropdown">
           <a class="dropdown-toggle text-decoration-none fw-semibold text-primary px-2 py-1 bg-light rounded shadow-sm d-inline-block"
@@ -37,11 +39,18 @@
             {{ bank.name }}
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item text-warning" href="#">Edit</a></li>
-            <li><a class="dropdown-item text-danger" href="#">Delete</a></li>
+            <li><a class="dropdown-item text-warning" href="{{url_for(
+              'edit_questionbank',question_bank_id=bank.id)}}">Edit</a></li>
+            <li>
+            <form action="{{ url_for('delete_questionbank', question_bank_id=bank.id) }}" method="POST"
+              onsubmit="return confirm('Are you sure you want to delete the question bank \'{{ bank.name }}\' and all its questions?');">
+              <button type="submit" class="dropdown-item text-danger">Delete</button>
+            </form>
+          </li>
           </ul>
         </div>
       </div>
+
       {% endfor %}
     </div>
 

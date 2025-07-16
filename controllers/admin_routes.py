@@ -9,12 +9,7 @@ from sqlalchemy import func
 @app.route('/admin_dashboard')
 @adminlogin_required
 def admin_dashboard():
-    # Session-based admin access check
-    # if 'user_id' not in session or session.get('role') != 'admin':
-    #     flash('Access denied. Please login as admin.', 'danger')
-    #     return redirect(url_for('login'))
-
-    
+      
     subjects = Subject.query.all()
     question_banks = QuestionBank.query.all()
 
@@ -92,6 +87,72 @@ def add_questionbank():
 
 
 
+@app.route('/edit_questionbank/<int:question_bank_id>', methods=['GET', 'POST'])
+@adminlogin_required
+def edit_questionbank(question_bank_id):
+    question_bank = QuestionBank.query.get_or_404(question_bank_id)
+    subject = Subject.query.get(question_bank.subject_id)
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        question_id = request.form.get('question_id')
+
+        question = Question.query.get(question_id)
+
+        if not question or question.question_bank_id != question_bank_id:
+            flash("Invalid question selected.", "danger")
+            return redirect(url_for('edit_questionbank', question_bank_id=question_bank_id))
+
+        if action == 'update':
+            updated_text = request.form.get(f'question_text_{question_id}', '').strip()
+            updated_difficulty = request.form.get(f'difficulty_{question_id}', '').strip()
+            updated_marks = int(request.form.get(f'marks_{question_id}', 0))
+
+            if not updated_text or updated_difficulty not in ['Easy', 'Medium', 'Hard'] or updated_marks not in [2, 8]:
+                flash("Invalid data for question update.", "warning")
+            else:
+                question.text = updated_text
+                question.difficulty = updated_difficulty
+                question.marks = updated_marks
+                db.session.commit()
+                flash("Question updated successfully.", "success")
+
+        elif action == 'delete':
+            db.session.delete(question)
+            db.session.commit()
+            flash("Question deleted successfully.", "success")
+
+        return redirect(url_for('edit_questionbank', question_bank_id=question_bank_id))
+
+    questions = Question.query.filter_by(question_bank_id=question_bank_id).all()
+    return render_template('admin_templates/edit_questionbank.html',
+                           question_bank=question_bank,
+                           subject=subject,
+                           questions=questions,current_year=datetime.now().year)
+
+
+
+@app.route('/delete_questionbank/<int:question_bank_id>', methods=['POST'])
+@adminlogin_required
+def delete_questionbank(question_bank_id):
+    question_bank = QuestionBank.query.get_or_404(question_bank_id)
+
+    # Delete associated questions first
+    questions = Question.query.filter_by(question_bank_id=question_bank.id).all()
+    for question in questions:
+        db.session.delete(question)
+
+    # Delete the question bank itself
+    db.session.delete(question_bank)
+    db.session.commit()
+
+    flash(f"Question Bank '{question_bank.name}' and all its questions have been deleted.", "success")
+    return redirect(url_for('admin_dashboard'))
+
+
+
+
+
 @app.route('/add_questions', methods=['GET', 'POST'])
 @adminlogin_required
 def add_questions():
@@ -101,8 +162,8 @@ def add_questions():
         question_bank_id = request.form.get('question_bank_id')
         text = request.form.get('text', '').strip()
         difficulty = request.form.get('difficulty', '').strip().lower()
-        q_type = request.form.get('type', '').strip()
-        correct_answer = request.form.get('correct_answer', '').strip()
+        marks = request.form.get('marks')
+        
 
         # Validate question bank exists
         bank = QuestionBank.query.get(question_bank_id)
@@ -110,7 +171,7 @@ def add_questions():
             flash("Selected Question Bank does not exist.", "danger")
             return redirect(url_for('add_questions'))
 
-        if not text or not difficulty or not q_type or not correct_answer:
+        if not text or not difficulty or not marks:
             flash("All fields are required.", "warning")
             return redirect(url_for('add_questions'))
 
@@ -118,8 +179,7 @@ def add_questions():
         question = Question(
             text=text,
             difficulty=difficulty,
-            type=q_type,
-            correct_answer=correct_answer,
+            marks=marks,
             question_bank_id=question_bank_id
         )
         db.session.add(question)

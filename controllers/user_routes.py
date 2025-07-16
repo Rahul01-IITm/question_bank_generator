@@ -30,34 +30,40 @@ def user_dashboard():
 @userlogin_required
 def generate_question_paper():
     if request.method == 'POST':
-        title = request.form.get('title').strip()
+        title = request.form.get('title', '').strip()
         subject_id = request.form.get('subject_id')
         difficulty = request.form.get('difficulty')
-        num_questions = int(request.form.get('num_questions'))
+        num_2marks = request.form.get('num_2marks', type=int)
+        num_8marks = request.form.get('num_8marks', type=int)
 
-        if not all([title, subject_id, difficulty, num_questions]):
+        if not all([title, subject_id, difficulty]) or num_2marks is None or num_8marks is None:
             flash("All fields are required.", "danger")
             return redirect(url_for('generate_question_paper'))
 
-        # Fetch all questions from all question banks for this subject with given difficulty
-        all_questions = (
-            Question.query
-            .join(QuestionBank)
-            .filter(
-                QuestionBank.subject_id == subject_id,
-                Question.difficulty.ilike(difficulty)
-            )
-            .all()
-        )
+        # Fetch questions by difficulty and marks
+        q_2marks = Question.query.join(QuestionBank).filter(
+            QuestionBank.subject_id == subject_id,
+            Question.difficulty.ilike(difficulty),
+            Question.marks == 2
+        ).all()
 
-        if len(all_questions) < num_questions:
-            flash(f"Only {len(all_questions)} question(s) available for this subject and difficulty. Cannot generate {num_questions}.", "warning")
+        q_8marks = Question.query.join(QuestionBank).filter(
+            QuestionBank.subject_id == subject_id,
+            Question.difficulty.ilike(difficulty),
+            Question.marks == 8
+        ).all()
+
+        if len(q_2marks) < num_2marks or len(q_8marks) < num_8marks:
+            flash(f"Not enough questions available: {len(q_2marks)} (2 marks), {len(q_8marks)} (8 marks).", "warning")
             return redirect(url_for('generate_question_paper'))
 
         # Randomly sample questions
-        selected_questions = random.sample(all_questions, num_questions)
+        selected_2marks = random.sample(q_2marks, num_2marks)
+        selected_8marks = random.sample(q_8marks, num_8marks)
+        selected_questions = selected_2marks + selected_8marks
+        random.shuffle(selected_questions)
 
-        # Create new question paper
+        # Create the new question paper
         new_paper = QuestionPaper(
             title=title,
             subject_id=subject_id,
@@ -65,34 +71,33 @@ def generate_question_paper():
             user_id=session.get('user_id')
         )
         db.session.add(new_paper)
-        db.session.commit()  # Commit so new_paper gets an ID
+        db.session.commit()  # To assign ID
 
         # Link questions
         for question in selected_questions:
-            qpq = QuestionPaperQuestion(
+            db.session.add(QuestionPaperQuestion(
                 question_paper_id=new_paper.id,
                 question_id=question.id
-            )
-            db.session.add(qpq)
-
+            ))
         db.session.commit()
 
-        # Fetch full data and render display page directly
+        # Display result
         paper = QuestionPaper.query.get(new_paper.id)
-        linked_questions = (
-            Question.query
-            .join(QuestionPaperQuestion, Question.id == QuestionPaperQuestion.question_id)
-            .filter(QuestionPaperQuestion.question_paper_id == paper.id)
-            .all()
-        )
+        linked_questions = Question.query.join(
+            QuestionPaperQuestion, Question.id == QuestionPaperQuestion.question_id
+        ).filter(
+            QuestionPaperQuestion.question_paper_id == paper.id
+        ).all()
         user = User.query.get(session.get('user_id'))
+
         flash("Question Paper generated successfully!", "success")
-        return render_template('user_templates/display_generated_paper.html', paper=paper, questions=linked_questions,user=user)
+        return render_template('user_templates/display_generated_paper.html', paper=paper, questions=linked_questions, user=user)
 
     # GET method – show form
     subjects = Subject.query.order_by(Subject.name).all()
     user = User.query.get(session.get('user_id'))
-    return render_template("user_templates/generate_question_paper.html", subjects=subjects, user=user)
+    return render_template("user_templates/generate_question_paper.html", subjects=subjects, user=user,current_year=datetime.now().year)
+
 
 
 

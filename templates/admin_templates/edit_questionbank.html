@@ -1,0 +1,87 @@
+{% extends 'admin_templates/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mb-3">
+    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+  </a>
+
+  <h2 class="mb-4">Edit Question Bank: <span class="text-primary">{{ question_bank.name }}</span> <small class="text-muted">(Subject: {{ subject.name }})</small></h2>
+
+  {% if questions %}
+    {% for q in questions %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <form method="POST" class="needs-validation" novalidate>
+          <input type="hidden" name="question_id" value="{{ q.id }}">
+          
+          <div class="mb-3">
+            <label for="question_text_{{ q.id }}" class="form-label fw-bold">Question Text</label>
+            <textarea name="question_text_{{ q.id }}" id="question_text_{{ q.id }}" class="form-control" rows="4" required>{{ q.text }}</textarea>
+            <div class="invalid-feedback">
+              Please enter the question text.
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="difficulty_{{ q.id }}" class="form-label fw-bold">Difficulty</label>
+              <select name="difficulty_{{ q.id }}" id="difficulty_{{ q.id }}" class="form-select" required>
+                <option value="Easy" {% if q.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                <option value="Medium" {% if q.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="Hard" {% if q.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="marks_{{ q.id }}" class="form-label fw-bold">Marks</label>
+              <select name="marks_{{ q.id }}" id="marks_{{ q.id }}" class="form-select" required>
+                <option value="2" {% if q.marks == 2 %}selected{% endif %}>2</option>
+                <option value="8" {% if q.marks == 8 %}selected{% endif %}>8</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="submit" name="action" value="update" class="btn btn-primary">
+              <i class="fas fa-check-circle me-2"></i>Update
+            </button>
+            <button type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this question?')">
+              <i class="fas fa-trash-alt me-2"></i>Delete
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      <p class="mb-0">No questions in this bank yet.</p>
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+{% endblock %}

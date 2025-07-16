@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}Admin Dashboard{% endblock %}</title>
@@ -25,7 +26,8 @@
     }
 
     .navbar-brand {
-        font-size: 1.25rem; /* Slightly larger brand */
+      font-size: 1.25rem;
+      /* Slightly larger brand */
     }
 
     .navbar-nav-center {
@@ -37,7 +39,8 @@
       font-weight: 500;
       font-size: 1rem;
       color: #495057;
-      padding-left: 0.75rem; /* Consistent padding */
+      padding-left: 0.75rem;
+      /* Consistent padding */
       padding-right: 0.75rem;
     }
 
@@ -116,8 +119,10 @@
       letter-spacing: 0.5px;
       white-space: nowrap;
     }
-     .question-bank-card .dropdown-toggle::after {
-        display: none; /* Hide default Bootstrap dropdown arrow */
+
+    .question-bank-card .dropdown-toggle::after {
+      display: none;
+      /* Hide default Bootstrap dropdown arrow */
     }
 
     /* Add Question Bank Button Styling */
@@ -126,7 +131,8 @@
       color: #0d6efd;
       border-radius: 0.5rem;
       font-weight: 500;
-      padding: 0.6rem 1.25rem; /* Adjusted padding slightly */
+      padding: 0.6rem 1.25rem;
+      /* Adjusted padding slightly */
       text-decoration: none;
       /* margin-top: 5.5rem; /* Removed: Handled by Bootstrap grid/flex */
     }
@@ -139,11 +145,13 @@
 
     /* Action Buttons Card Styling */
     .card-actions {
-        border: none; /* Cleaner look, rely on shadow */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: none;
+      /* Cleaner look, rely on shadow */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+
     .card-actions .card-title {
-        font-weight: 500;
+      font-weight: 500;
     }
 
     .btn-action {
@@ -151,7 +159,8 @@
       /* padding: 0.8rem 2.5rem; /* Handled by btn-lg */
       font-weight: 500;
       /* font-size: 1.05rem; /* Handled by btn-lg */
-      min-width: 230px; /* Slightly adjusted min-width for btn-lg */
+      min-width: 230px;
+      /* Slightly adjusted min-width for btn-lg */
     }
 
     .btn-view-paper {
@@ -178,26 +187,32 @@
 
     footer {
       background-color: #f1f3f5;
-      padding: 1.25rem 0; /* Increased padding */
+      padding: 1.25rem 0;
+      /* Increased padding */
       text-align: center;
       font-size: 0.95rem;
       color: #6c757d;
       margin-top: auto;
-      border-top: 1px solid #dee2e6; /* Added border-top */
+      border-top: 1px solid #dee2e6;
+      /* Added border-top */
     }
   </style>
 </head>
+
 <body>
+
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-semibold text-primary" href="#">Admin Panel</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav mx-auto align-items-center"> <!-- mx-auto for centering, align-items-center for separator -->
+        <ul class="navbar-nav mx-auto align-items-center">
+          <!-- mx-auto for centering, align-items-center for separator -->
           <li class="nav-item">
             <a class="nav-link nav-center-links" href="{{url_for('home')}}">Home</a>
           </li>
@@ -207,7 +222,7 @@
           <li class="nav-item">
             <a class="nav-link nav-center-links" href="{{url_for('user_information')}}">Users</a>
           </li>
-           <li class="nav-item px-1"> <!-- Wrapper for separator with padding -->
+          <li class="nav-item px-1"> <!-- Wrapper for separator with padding -->
             <span class="text-muted">|</span>
           </li>
           <li class="nav-item">
@@ -223,35 +238,55 @@
 
   <!-- Main Dashboard -->
   <div class="container flex-grow-1">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+
     <div class="dashboard-container">
+
+
+
       <main>
+
+
         {% block content %}
-        <div class="row align-items-center mb-4 pb-3 border-bottom"> <!-- Bootstrap row for Question Banks and Add button -->
-            <div class="col-md">
-                <h3 class="section-title mb-3 mb-md-0">Question Banks</h3>
-            </div>
-            <div class="col-md-auto text-md-end mt-2 mt-md-0">
-                <a href="#" class="btn btn-add-bank">
-                    <i class="bi bi-plus-circle me-2"></i>Add Question Bank
-                </a>
-            </div>
+        <div class="row align-items-center mb-4 pb-3 border-bottom">
+          <!-- Bootstrap row for Question Banks and Add button -->
+          <div class="col-md">
+            <h3 class="section-title mb-3 mb-md-0">Question Banks</h3>
+          </div>
+          <div class="col-md-auto text-md-end mt-2 mt-md-0">
+            <a href="#" class="btn btn-add-bank">
+              <i class="bi bi-plus-circle me-2"></i>Add Question Bank
+            </a>
+          </div>
         </div>
         <div class="d-flex flex-wrap gap-3 mb-5"> <!-- flex-wrap for cards, gap-3 for spacing -->
-            <div class="question-bank-card">
-                <span class="options-badge">Options</span>
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Options">
-                        <i class="bi bi-body-text"></i>
-                    </a>
-                    <ul class="dropdown-menu shadow-sm">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-pencil-square me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash-fill me-2"></i>Delete</a></li>
-                    </ul>
-                </div>
+          <div class="question-bank-card">
+            <span class="options-badge">Options</span>
+            <div class="dropdown">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Options">
+                <i class="bi bi-body-text"></i>
+              </a>
+              <ul class="dropdown-menu shadow-sm">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil-square me-2"></i>Edit</a></li>
+                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash-fill me-2"></i>Delete</a></li>
+              </ul>
             </div>
-            <div class="question-bank-card" title="Bank 2"><i class="bi bi-card-text"></i></div>
-            <div class="question-bank-card" title="Bank 3"><i class="bi bi-body-text"></i></div>
-            <div class="question-bank-card" title="Bank 4"><i class="bi bi-card-text"></i></div>
+          </div>
+          <div class="question-bank-card" title="Bank 2"><i class="bi bi-card-text"></i></div>
+          <div class="question-bank-card" title="Bank 3"><i class="bi bi-body-text"></i></div>
+          <div class="question-bank-card" title="Bank 4"><i class="bi bi-card-text"></i></div>
         </div>
 
         <!-- Action Buttons Section with Card Styling -->
@@ -275,10 +310,11 @@
 
   <!-- Footer -->
   <footer class="bg-light text-center text-lg-start mt-5">
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-            © {{current_year}} Copyright: Question Paper Generator
-        </div>
-    </footer>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+      © {{current_year}} Copyright: Question Paper Generator
+    </div>
+  </footer>
 
 </body>
+
 </html>

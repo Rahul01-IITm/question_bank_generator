@@ -7,14 +7,14 @@
     <h2 class="mb-4">Add Question</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <form method="POST" action="{{ url_for('add_questions') }}">
@@ -23,7 +23,7 @@
             <select class="form-select" id="question_bank" name="question_bank_id" required>
                 <option value="">-- Select Question Bank --</option>
                 {% for bank in question_banks %}
-                    <option value="{{ bank.id }}">{{ bank.name }}</option>
+                <option value="{{ bank.id }}">{{ bank.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -44,14 +44,16 @@
         </div>
 
         <div class="mb-3">
-            <label for="type" class="form-label">Question Type</label>
-            <input type="text" class="form-control" id="type" name="type" placeholder="e.g. MCQ, Descriptive" required>
+            <label for="marks" class="form-label">Question Type (Marks)</label>
+            <select class="form-select" id="marks" name="marks" required>
+                <option value="">-- Select Marks --</option>
+                <option value="2">2 Marks</option>
+                <option value="8">8 Marks</option>
+            </select>
         </div>
 
-        <div class="mb-3">
-            <label for="correct_answer" class="form-label">Correct Answer</label>
-            <input type="text" class="form-control" id="correct_answer" name="correct_answer" required>
-        </div>
+
+        
 
         <button type="submit" class="btn btn-primary">Add Question</button>
         <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back</a>
