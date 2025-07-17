@@ -210,7 +210,7 @@ def add_questions():
 
     return render_template(
         'admin_templates/add_questions.html',
-        question_banks=question_banks
+        question_banks=question_banks,current_year=datetime.now().year
     )
 
 

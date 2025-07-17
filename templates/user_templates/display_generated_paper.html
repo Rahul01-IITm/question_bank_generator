@@ -7,6 +7,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
 <style>
+    /* -- Modern Color Palette & Variables -- */
+    :root {
+        --primary-color: #4f46e5;
+        --secondary-color: #6b7280;
+        --background-color: #f9fafb;
+        --card-bg-color: #ffffff;
+        --text-color: #111827;
+        --border-color: #e5e7eb;
+        --hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* -- Print Styles -- */
     @media print {
         body > nav,
         body > footer,
@@ -14,41 +27,126 @@
             display: none !important;
         }
         .container {
-            max-width: 100%;
+            max-width: 100% !important;
         }
         .card {
             border: 1px solid #dee2e6 !important;
             box-shadow: none !important;
         }
+        .paper-header {
+            border-left-width: 4px !important;
+        }
+    }
+    
+    body {
+        background-color: var(--background-color);
     }
 
-    .section-title {
+    /* -- Paper Header Card -- */
+    .paper-header {
+        background-color: var(--card-bg-color);
+        border-radius: 1rem;
+        box-shadow: var(--card-shadow);
+        border-left: 5px solid var(--primary-color);
+    }
+
+    .paper-header .card-body {
+        padding: 2.5rem;
+    }
+
+    .paper-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-color);
+    }
+
+    .paper-subject {
+        font-size: 1.1rem;
+        color: var(--secondary-color);
+    }
+
+    /* -- Metadata Section -- */
+    .metadata-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .info-item .label-text {
+        font-weight: 500;
+        color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-item .label-text i {
+        margin-right: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    .info-item .info-value {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--text-color);
+        padding-left: 1.5rem; /* Indent under icon */
+    }
+
+    .total-marks-display {
+        background-color: #eef2ff; /* Light primary background */
+        color: var(--primary-color);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+    }
+
+    /* -- Question Group Cards -- */
+    .question-group-card {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .question-group-card .card-header {
+        background-color: var(--background-color);
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .question-group-card .group-title {
         font-size: 1.3rem;
         font-weight: 600;
-        color: #495057;
-        margin-bottom: 0.75rem;
+        color: var(--text-color);
+        margin-bottom: 0;
     }
 
-    .label-text {
-        font-weight: 500;
-        color: #6c757d;
-    }
-
-    .info-value {
+    .question-group-card .list-group-item {
         font-size: 1.1rem;
-        font-weight: 500;
-        color: #212529;
+        line-height: 1.7;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .question-group-card .list-group-item:last-child {
+        border-bottom: none;
     }
 
-    .group-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #343a40;
+    /* -- Action Buttons -- */
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        color: #fff;
+        border: 1px solid var(--primary-color);
     }
-
-    .list-group-item {
-        font-size: 1.05rem;
-        line-height: 1.6;
+    .btn-outline-primary-custom {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    .btn-outline-primary-custom:hover {
+        background-color: var(--primary-color);
+        color: #fff;
     }
 </style>
 {% endblock head %}
@@ -57,104 +155,99 @@
 {% block content %}
 <div class="container my-5">
 
+    <!-- Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <h2 class="h4">Generated Paper</h2>
+        <div>
+            <a href="{{ url_for('download_question_paper', paper_id=paper.id) }}" class="btn btn-outline-primary-custom me-2">
+                <i class="bi bi-download me-1"></i> Download PDF
+            </a>
+            <button onclick="window.print()" class="btn btn-primary-custom">
+                <i class="bi bi-printer me-1"></i> Print
+            </button>
+        </div>
+    </div>
+
     <!-- Paper Header Card -->
-    <div class="card shadow-lg mb-5">
-        <div class="card-header bg-dark text-white p-4 no-print">
-            <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div>
-                    <h2 class="mb-1">{{ paper.title }}</h2>
-                    <small class="text-white-50">{{ paper.subject.name }}</small>
+    <div class="card paper-header mb-5">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="paper-title">{{ paper.title }}</h1>
+                    <p class="paper-subject">{{ paper.subject.name }}</p>
                 </div>
-                <div class="mt-2 mt-md-0">
-                    <a href="{{ url_for('download_question_paper', paper_id=paper.id) }}" class="btn btn-outline-light me-2">
-                        <i class="bi bi-download me-2"></i>Download PDF
-                    </a>
-                    <button onclick="window.print()" class="btn btn-outline-light">
-                        <i class="bi bi-printer me-2"></i>Print
-                    </button>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <div class="total-marks-display">
+                        <h5 class="fw-bold mb-0">Total Marks: {{ total_marks }}</h5>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body p-4">
-            <div class="row g-4">
-                <div class="col-md-8">
-                    <div class="section-title">{{ paper.title }}</div>
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-book me-2"></i>Subject:</span>
-                        <span class="info-value">{{ paper.subject.name }}</span>
-                    </div>
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-bar-chart-line me-2"></i>Difficulty:</span>
-                        <span class="badge bg-secondary">{{ paper.difficulty.capitalize() }}</span>
-                    </div>
-                    {% if semester %}
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-journal me-2"></i>Semester:</span>
-                        <span class="info-value">{{ semester }}</span>
-                    </div>
-                    {% endif %}
-                    {% if exam_year %}
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-calendar me-2"></i>Exam Year:</span>
-                        <span class="info-value">{{ exam_year }}</span>
-                    </div>
-                    {% endif %}
-                    {% if time_allotted %}
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-clock me-2"></i>Time Allotted:</span>
-                        <span class="info-value">
-                            {% set hours = time_allotted // 60 %}
-                            {% set minutes = time_allotted % 60 %}
-                            {{ hours }} hour{{ 's' if hours != 1 else '' }}{% if minutes > 0 %} {{ minutes }} minute{{ 's' if minutes != 1 else '' }}{% endif %}
-                        </span>
-                    </div>
-                    {% endif %}
+
+            <hr class="my-4">
+
+            <div class="metadata-grid">
+                <div class="info-item">
+                    <span class="label-text"><i class="bi bi-bar-chart-line"></i>Difficulty:</span>
+                    <span class="info-value badge bg-secondary fs-6">{{ paper.difficulty.capitalize() }}</span>
                 </div>
-                <div class="col-md-4 text-md-end">
-                    <div class="mt-2">
-                        <span class="label-text"><i class="bi bi-calendar-event me-2"></i>Generated on:</span>
-                        <span class="info-value">{{ paper.generation_date.strftime('%d %b %Y, %I:%M %p') }}</span>
-                    </div>
-                    <div class="mt-3">
-                        <h5 class="text-primary fw-semibold">Total Marks: {{ total_marks }}</h5>
-                    </div>
+                {% if semester %}
+                <div class="info-item">
+                    <span class="label-text"><i class="bi bi-journal"></i>Semester:</span>
+                    <span class="info-value">{{ semester }}</span>
                 </div>
+                {% endif %}
+                {% if exam_year %}
+                <div class="info-item">
+                    <span class="label-text"><i class="bi bi-calendar"></i>Exam Year:</span>
+                    <span class="info-value">{{ exam_year }}</span>
+                </div>
+                {% endif %}
+                {% if time_allotted %}
+                <div class="info-item">
+                    <span class="label-text"><i class="bi bi-clock"></i>Time Allotted:</span>
+                    <span class="info-value">
+                        {% set hours = time_allotted // 60 %}
+                        {% set minutes = time_allotted % 60 %}
+                        {{ hours }} hour{{ 's' if hours != 1 else '' }}{% if minutes > 0 %} {{ minutes }} minute{{ 's' if minutes != 1 else '' }}{% endif %}
+                    </span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Group A -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-light">
-            <h5 class="group-title mb-0">Group A – Short Answer Questions (2 Marks each)</h5>
+    <div class="card question-group-card mb-4">
+        <div class="card-header">
+            <h5 class="group-title">Group A – Short Answer Questions (2 Marks each)</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
             {% if group_a %}
                 <ol class="list-group list-group-numbered list-group-flush">
                     {% for q in group_a %}
-                        <li class="list-group-item p-3">{{ q.text }}</li>
+                        <li class="list-group-item">{{ q.text }}</li>
                     {% endfor %}
                 </ol>
             {% else %}
-                <p class="text-muted p-3">No questions are available for Group A.</p>
+                <p class="text-muted p-4">No questions are available for Group A.</p>
             {% endif %}
         </div>
     </div>
 
     <!-- Group B -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-light">
-            <h5 class="group-title mb-0">Group B – Long Answer Questions (8 Marks each)</h5>
+    <div class="card question-group-card mb-4">
+        <div class="card-header">
+            <h5 class="group-title">Group B – Long Answer Questions (8 Marks each)</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
             {% if group_b %}
                 <ol class="list-group list-group-numbered list-group-flush">
                     {% for q in group_b %}
-                        <li class="list-group-item p-3">{{ q.text }}</li>
+                        <li class="list-group-item">{{ q.text }}</li>
                     {% endfor %}
                 </ol>
             {% else %}
-                <p class="text-muted p-3">No questions are available for Group B.</p>
+                <p class="text-muted p-4">No questions are available for Group B.</p>
             {% endif %}
         </div>
     </div>

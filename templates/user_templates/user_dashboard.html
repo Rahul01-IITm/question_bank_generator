@@ -3,34 +3,150 @@
 {% block title %}User Dashboard{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 text-center" style="border: 2px solid #ffc107;">
-    <div class="container-fluid py-5">
-        <!-- The "Welcome {name}" from your wireframe -->
-        <h1 class="display-5 fw-bold">Welcome, {{user.full_name or current_user.username }}!</h1>
-        <p class="fs-4">What would you like to do today?</p>
+<style>
+    /* -- Modern Color Palette -- */
+    :root {
+        --primary-color: #4f46e5;
+        --secondary-color: #6b7280;
+        --background-color: #f9fafb;
+        --card-bg-color: #ffffff;
+        --text-color: #111827;
+        --light-text-color: #f9fafb;
+        --hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* -- Welcome Section -- */
+    .welcome-banner {
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        border: none;
+        padding: 3rem;
+    }
+
+    .welcome-banner .display-5 {
+        color: var(--text-color);
+        font-weight: 700;
+    }
+
+    .welcome-banner .fs-5 {
+        color: var(--secondary-color);
+    }
+
+    /* -- Action Cards Section -- */
+    .action-card {
+        background-color: var(--card-bg-color);
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .action-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .action-card .card-body {
+        padding: 2rem;
+    }
+
+    .action-card .card-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .action-card .card-title i {
+        margin-right: 0.75rem;
+        font-size: 1.8rem;
+    }
+    
+    .action-card .card-text {
+        color: var(--secondary-color);
+        line-height: 1.6;
+    }
+
+    /* -- Button Styles -- */
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #4338ca;
+        transform: scale(1.05);
+    }
+
+    .btn-outline-primary {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: var(--light-text-color);
+        transform: scale(1.05);
+    }
+
+</style>
+
+<!-- Welcome Section -->
+<div class="p-5 mb-4 rounded-3 text-center welcome-banner">
+    <div class="container-fluid py-4">
+        <h1 class="display-5">Welcome, {{ user.full_name or current_user.username }}!</h1>
+        <p class="fs-5 mx-auto" style="max-width: 600px;">Explore your dashboard to manage question papers and generate new ones with ease.</p>
     </div>
 </div>
 
-
-
-<!-- Main Action Cards -->
-<div class="row align-items-md-stretch">
-    <!-- Card for Viewing Papers -->
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 text-white bg-primary rounded-3">
-            <h2>View Papers</h2>
-            <p>Browse, view, and download previously generated question papers and previous year questions (PYQs).</p>
-            <a href="{{url_for('view_question_papers')}}" class="btn btn-outline-light" type="button">View Question Papers</a>
+<!-- Action Cards Section -->
+<div class="container">
+    <div class="row g-4">
+        <!-- View Papers Card -->
+        <div class="col-md-6">
+            <div class="p-4 h-100 action-card">
+                <div class="card-body">
+                    <h3 class="card-title">
+                        <i class="fas fa-file-alt"></i> <!-- Font Awesome Icon -->
+                        View Papers
+                    </h3>
+                    <p class="card-text mt-3">Browse, view, and download previously generated question papers and previous year questions (PYQs).</p>
+                </div>
+                <div class="px-4 pb-4">
+                    <a href="{{ url_for('view_question_papers') }}" class="btn btn-outline-primary mt-3">View Question Papers</a>
+                </div>
+            </div>
         </div>
-    </div>
-    <!-- Card for Generating a new Paper -->
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 bg-secondary text-white rounded-3">
-            <h2>Generate New Paper</h2>
-            <p>Create a brand new question paper by selecting subjects, topics, and difficulty levels.</p>
-            <a href="{{url_for('generate_question_paper')}}" class="btn btn-outline-light" type="button">Generate
-                Question Paper</a>
+
+        <!-- Generate New Paper Card -->
+        <div class="col-md-6">
+            <div class="p-4 h-100 action-card">
+                 <div class="card-body">
+                    <h3 class="card-title">
+                        <i class="fas fa-plus-circle"></i> <!-- Font Awesome Icon -->
+                        Generate New Paper
+                    </h3>
+                    <p class="card-text mt-3">Create a brand new question paper by selecting subjects, topics, and difficulty levels.</p>
+                </div>
+                <div class="px-4 pb-4">
+                    <a href="{{ url_for('generate_question_paper') }}" class="btn btn-primary mt-3">Generate Question Paper</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Add Font Awesome for Icons (include in your base template) -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 {% endblock %}

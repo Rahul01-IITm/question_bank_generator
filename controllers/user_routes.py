@@ -40,7 +40,7 @@ def view_question_papers():
         results = QuestionPaper.query.filter_by(user_id=user.id).order_by(QuestionPaper.id.desc()).all()
 
 
-    return render_template('user_templates/view_papers.html', user=user,results=results, query=query)
+    return render_template('user_templates/view_papers.html', user=user,results=results, query=query,current_year=datetime.now().year)
 
 
 
@@ -151,7 +151,8 @@ def display_generated_paper(paper_id):
         user=user,
         semester=semester,
         exam_year=exam_year,
-        time_allotted=time_allotted
+        time_allotted=time_allotted,
+        current_year=datetime.now().year
     )
 
 

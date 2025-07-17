@@ -3,16 +3,167 @@
 {% block title %}Generate Question Paper{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-sm border-light">
-        <div class="card-header bg-light py-3">
+<style>
+    /* -- Modern Color Palette & Variables -- */
+    :root {
+        --primary-color: #4f46e5;
+        --secondary-color: #6b7280;
+        --success-color: #10b981;
+        --background-color: #f9fafb;
+        --card-bg-color: #ffffff;
+        --text-color: #111827;
+        --border-color: #e5e7eb;
+        --input-bg-color: #f9fafb;
+        --hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* -- Main Container & Card -- */
+    .form-container {
+        max-width: 900px;
+        margin: 2rem auto;
+    }
+
+    .form-card {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        background-color: var(--background-color);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-card-header h4 {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.4rem; /* Slightly larger header */
+        display: flex;
+        align-items: center;
+    }
+
+    .form-card-header h4 i {
+        color: var(--primary-color);
+        margin-right: 0.75rem;
+    }
+
+    .form-card-body {
+        padding: 2.5rem; /* Increased padding */
+    }
+
+    /* -- Form Elements Styling -- */
+    .form-label {
+        font-weight: 500;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.05rem; /* Increased font size */
+    }
+
+    .form-control,
+    .form-select {
+        background-color: var(--input-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.8rem 1.1rem; /* Adjusted padding for larger text */
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        font-size: 1.05rem; /* Increased font size */
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    /* -- Custom Range Slider -- */
+    .form-range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.9;
+        transition: opacity 0.2s;
+    }
+
+    .form-range:hover {
+        opacity: 1;
+    }
+
+    .form-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px; /* Slightly larger thumb */
+        height: 22px; /* Slightly larger thumb */
+        background: var(--primary-color);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .form-range::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* -- Total Marks & Time Display -- */
+    .total-marks-display, .time-display {
+        background-color: var(--background-color);
+        border-radius: 0.75rem;
+        padding: 1.25rem; /* Increased padding */
+        border: 1px solid var(--border-color);
+    }
+
+    .time-display p {
+        font-size: 1.1rem; /* Increased font size */
+        margin-bottom: 0;
+    }
+
+    .total-marks-display h5 {
+        font-size: 1.2rem; /* Increased font size */
+        margin-bottom: 0;
+    }
+
+    #total_marks, #converted_time {
+        color: var(--primary-color);
+    }
+
+    /* -- Action Buttons -- */
+    .form-actions {
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-success, .btn-secondary {
+        padding: 0.8rem 1.75rem;
+        font-weight: 600;
+        font-size: 1.05rem; /* Match other elements */
+    }
+
+</style>
+
+<div class="container form-container">
+    <div class="card form-card">
+        <div class="card-header form-card-header">
             <h4 class="mb-0">
-                <i class="bi bi-journal-plus me-2"></i>Generate New Question Paper
+                <i class="bi bi-journal-plus"></i>Generate New Question Paper
             </h4>
         </div>
-        <div class="card-body p-4">
+        <div class="card-body form-card-body">
             <form method="POST" action="{{ url_for('generate_question_paper') }}">
-                <div class="row">
+                <div class="row g-5"> <!-- Increased gutter spacing -->
                     <!-- Left Column: Paper Details -->
                     <div class="col-md-6">
                         <div class="mb-4">
@@ -37,60 +188,50 @@
                                 <option value="hard">Hard</option>
                             </select>
                         </div>
-
-                        <!-- New Field: Semester -->
                         <div class="mb-4">
                             <label for="semester" class="form-label">Semester</label>
                             <input type="text" class="form-control" id="semester" name="semester" placeholder="e.g., 4th Sem">
                         </div>
-
-                        <!-- New Field: Exam Year -->
                         <div class="mb-4">
                             <label for="exam_year" class="form-label">Exam Year</label>
                             <input type="number" class="form-control" id="exam_year" name="exam_year" placeholder="e.g., 2025">
                         </div>
-
-                        <!-- New Field: Time Allotted -->
-                        <div class="mb-4">
-                            <label for="time_allotted" class="form-label">Time Allotted (in minutes)</label>
-                            <input type="number" class="form-control" id="time_allotted" name="time_allotted" placeholder="e.g., 120" oninput="updateTimeDisplay()">
-                        </div>
-
-                        <!-- Converted Time Display -->
-                        <div class="mb-4">
-                            <label class="form-label">Converted Time:</label>
-                            <p class="fw-bold text-primary" id="converted_time">2 hours 0 minutes</p>
-                        </div>
                     </div>
 
-                    <!-- Right Column: Question Configuration -->
+                    <!-- Right Column: Configuration & Time -->
                     <div class="col-md-6">
-                        <!-- 2 Marks Question Slider -->
                         <div class="mb-4">
                             <label for="num_2marks" class="form-label">Number of 2-Mark Questions: <span class="fw-bold text-primary" id="val_2marks">5</span></label>
                             <input type="range" class="form-range" id="num_2marks" name="num_2marks" min="0" max="30" value="5" oninput="updateValue('num_2marks', 'val_2marks')">
                         </div>
 
-                        <!-- 8 Marks Question Slider -->
                         <div class="mb-4">
                             <label for="num_8marks" class="form-label">Number of 8-Mark Questions: <span class="fw-bold text-primary" id="val_8marks">5</span></label>
                             <input type="range" class="form-range" id="num_8marks" name="num_8marks" min="0" max="30" value="5" oninput="updateValue('num_8marks', 'val_8marks')">
                         </div>
 
-                        <!-- Total Marks Display -->
-                        <div class="mt-4 p-3 bg-light rounded border text-center">
-                            <h5 class="mb-0">Total Marks: <span id="total_marks" class="fw-bold text-success">50</span></h5>
+                        <div class="mb-4">
+                            <label for="time_allotted" class="form-label">Time Allotted (minutes)</label>
+                            <input type="number" class="form-control" id="time_allotted" name="time_allotted" placeholder="e.g., 120" oninput="updateTimeDisplay()">
+                        </div>
+
+                        <div class="time-display text-center mb-4">
+                            <p class="fw-bold" id="converted_time">2 hours 0 minutes</p>
+                        </div>
+
+                        <div class="total-marks-display text-center">
+                            <h5 class="mb-0 fw-bold">Total Marks: <span id="total_marks">50</span></h5>
                             <input type="hidden" name="total_marks" id="total_marks_input" value="50">
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Actions -->
-                <div class="mt-4 pt-3 border-top">
-                    <button type="submit" class="btn btn-success btn-lg">
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
                         <i class="bi bi-arrow-right-circle me-2"></i>Generate Paper
                     </button>
-                    <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary btn-lg">
+                    <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
                         <i class="bi bi-x-circle me-2"></i>Cancel
                     </a>
                 </div>
@@ -129,6 +270,9 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         updateTotalMarks();
+        // Initialize time display based on a default or placeholder value if needed
+        const initialTime = document.getElementById('time_allotted').value || 120;
+        document.getElementById('time_allotted').value = initialTime;
         updateTimeDisplay();
     });
 </script>

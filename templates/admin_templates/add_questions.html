@@ -2,61 +2,176 @@
 
 {% block title %}Add Question{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    /* -- Modern Color Palette & Variables -- */
+    :root {
+        --primary-color: #4f46e5;
+        --secondary-color: #6b7280;
+        --background-color: #f9fafb;
+        --card-bg-color: #ffffff;
+        --text-color: #111827;
+        --border-color: #e5e7eb;
+        --input-bg-color: #f9fafb;
+        --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        background-color: var(--background-color);
+    }
+
+    /* -- Form Container & Card -- */
+    .form-container {
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+
+    .form-card {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        background-color: var(--background-color);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-card-header h2 {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-card-header h2 i {
+        color: var(--primary-color);
+        margin-right: 0.75rem;
+    }
+
+    .form-card-body {
+        padding: 2rem;
+    }
+
+    /* -- Form Elements Styling -- */
+    .form-label {
+        font-weight: 500;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control,
+    .form-select {
+        background-color: var(--input-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    /* -- Action Buttons -- */
+    .form-actions {
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+    }
+
+    .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+    }
+
+</style>
+{% endblock head %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Add Question</h2>
+<div class="container form-container">
+    <div class="card form-card">
+        <div class="card-header form-card-header">
+            <h2><i class="bi bi-patch-question-fill"></i>Add New Question</h2>
+        </div>
+        <div class="card-body form-card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <form method="POST" action="{{ url_for('add_questions') }}">
+                <div class="mb-4">
+                    <label for="question_bank" class="form-label">Select Question Bank</label>
+                    <select class="form-select" id="question_bank" name="question_bank_id" required>
+                        <option value="" disabled selected>-- Choose a Question Bank --</option>
+                        {% for bank in question_banks %}
+                        <option value="{{ bank.id }}">{{ bank.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="text" class="form-label">Question Text</label>
+                    <textarea class="form-control" id="text" name="text" rows="4" placeholder="Enter the full question text here..." required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="difficulty" class="form-label">Difficulty</label>
+                        <select class="form-select" id="difficulty" name="difficulty" required>
+                            <option value="" disabled selected>-- Select Difficulty --</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label for="marks" class="form-label">Question Type (Marks)</label>
+                        <select class="form-select" id="marks" name="marks" required>
+                            <option value="" disabled selected>-- Select Marks --</option>
+                            <option value="2">2 Marks (Short Answer)</option>
+                            <option value="8">8 Marks (Long Answer)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Add Question</button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"><i class="bi bi-x-lg me-2"></i>Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
-    <form method="POST" action="{{ url_for('add_questions') }}">
-        <div class="mb-3">
-            <label for="question_bank" class="form-label">Select Question Bank</label>
-            <select class="form-select" id="question_bank" name="question_bank_id" required>
-                <option value="">-- Select Question Bank --</option>
-                {% for bank in question_banks %}
-                <option value="{{ bank.id }}">{{ bank.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="text" class="form-label">Question Text</label>
-            <textarea class="form-control" id="text" name="text" rows="4" required></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="difficulty" class="form-label">Difficulty</label>
-            <select class="form-select" id="difficulty" name="difficulty" required>
-                <option value="">-- Select Difficulty --</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="marks" class="form-label">Question Type (Marks)</label>
-            <select class="form-select" id="marks" name="marks" required>
-                <option value="">-- Select Marks --</option>
-                <option value="2">2 Marks</option>
-                <option value="8">8 Marks</option>
-            </select>
-        </div>
-
-
-        
-
-        <button type="submit" class="btn btn-primary">Add Question</button>
-        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back</a>
-    </form>
 </div>
 {% endblock %}
