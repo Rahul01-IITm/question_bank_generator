@@ -34,6 +34,9 @@ def generate_question_paper():
         num_2marks = request.form.get('num_2marks', type=int)
         num_8marks = request.form.get('num_8marks', type=int)
         total_marks = request.form.get('total_marks',type=int)
+        semester = request.form.get('semester', '').strip()
+        exam_year = request.form.get('exam_year', '').strip()
+        time_allotted = request.form.get('time_allotted', type=int)
 
         if not all([title, subject_id, difficulty]) or num_2marks is None or num_8marks is None:
             flash("All fields are required.", "danger")
@@ -91,14 +94,14 @@ def generate_question_paper():
         ).all()
         user = User.query.get(session.get('user_id'))
 
-        # After querying `linked_questions`
+        
         group_a = [q for q in linked_questions if q.marks == 2]
         group_b = [q for q in linked_questions if q.marks == 8]
 
 
 
         flash("Question Paper generated successfully!", "success")
-        return render_template('user_templates/display_generated_paper.html', paper=paper, group_a=group_a, group_b=group_b, total_marks=total_marks, questions=linked_questions, user=user)
+        return render_template('user_templates/display_generated_paper.html', paper=paper, group_a=group_a, group_b=group_b, total_marks=total_marks, questions=linked_questions, user=user,semester=semester,exam_year=exam_year,time_alloted=time_allotted)
 
     # GET method – show form
     subjects = Subject.query.order_by(Subject.name).all()

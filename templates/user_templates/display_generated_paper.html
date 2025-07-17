@@ -87,6 +87,28 @@
                         <span class="label-text"><i class="bi bi-bar-chart-line me-2"></i>Difficulty:</span>
                         <span class="badge bg-secondary">{{ paper.difficulty.capitalize() }}</span>
                     </div>
+                    {% if semester %}
+                    <div class="mt-2">
+                        <span class="label-text"><i class="bi bi-journal me-2"></i>Semester:</span>
+                        <span class="info-value">{{ semester }}</span>
+                    </div>
+                    {% endif %}
+                    {% if exam_year %}
+                    <div class="mt-2">
+                        <span class="label-text"><i class="bi bi-calendar me-2"></i>Exam Year:</span>
+                        <span class="info-value">{{ exam_year }}</span>
+                    </div>
+                    {% endif %}
+                    {% if time_allotted %}
+                    <div class="mt-2">
+                        <span class="label-text"><i class="bi bi-clock me-2"></i>Time Allotted:</span>
+                        <span class="info-value">
+                            {% set hours = time_allotted // 60 %}
+                            {% set minutes = time_allotted % 60 %}
+                            {{ hours }} hour{{ 's' if hours != 1 else '' }}{% if minutes > 0 %} {{ minutes }} minute{{ 's' if minutes != 1 else '' }}{% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-4 text-md-end">
                     <div class="mt-2">
