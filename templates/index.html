@@ -2,60 +2,284 @@
 <html lang="en" class="h-100">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}QPG - The Ultimate Question Paper Generator{% endblock %}</title>
 
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <!-- Default Title (can be overridden by child templates) -->
-  <title>{% block title %}Question Paper Generator{% endblock %}</title>
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Base styles for the entire site */
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #3b82f6;
+      --light-gray: #f8f9fa;
+      --dark-text: #1f2937;
+    }
+
     body {
-      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-gray);
+      color: #374151;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .navbar {
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .navbar-brand {
+      font-weight: 700 !important;
+      color: var(--primary-color) !important;
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      padding: 6rem 0;
+      background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
+    }
+
+    .hero-content {
+      animation: slideUp 1s ease-out;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--dark-text);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 .highlight {
+      color: var(--primary-color);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      max-width: 550px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-buttons .btn {
+      padding: 12px 30px;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      margin: 5px;
+    }
+    .hero-buttons .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    .hero-buttons .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+    }
+    .hero-buttons .btn-outline-primary {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+     .hero-buttons .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      color: white;
+       transform: translateY(-3px);
+    }
+
+    
+
+    /* --- Features Section --- */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: var(--dark-text);
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+    
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 24px;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: var(--secondary-color);
+    }
+
+    .feature-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--dark-text);
+      margin-bottom: 0.5rem;
+    }
+    
+    /* --- How It Works Section --- */
+    .how-it-works {
+        background-color: #ffffff;
+    }
+
+    .step {
+        text-align: center;
+    }
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        border: 4px solid #e0e7ff;
+    }
+    .step-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: var(--dark-text);
     }
 
 
-    .main-content {
-      flex: 1;
+    /* --- Footer --- */
+    .footer {
+      background-color: #ffffff;
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes float { 
+      0% { transform: translateY(0px); } 
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
     }
   </style>
 
-  <!-- Placeholder for page-specific styles -->
-  {% block styles %}{% endblock %}
 </head>
 
 <body class="d-flex flex-column h-100">
 
-  <!-- Navbar - This will appear on every page -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
     <div class="container">
-      <a class="navbar-brand fw-bold text-primary fs-4" href="{{ url_for('login') }}">QPG</a>
-      <div class="ms-auto">
-        <a href="{{url_for('login')}}" class="btn btn-outline-primary me-2">Login</a>
-        <a href="{{url_for('register')}}" class="btn btn-primary">Register</a>
+      <a class="navbar-brand fs-4" href="#">QPG</a>
+      <div class="ms-auto hero-buttons">
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary d-none d-sm-inline-block">Login</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content Block - This is where child templates will inject their content -->
-  <main class="main-content">
-    {% block content %}{% endblock %}
+  <!-- Main Content -->
+  <main class="flex-shrink-0">
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6 hero-content text-center text-lg-start">
+            <h1>Create Perfect <span class="highlight">Exam Papers</span>, Instantly.</h1>
+            <p>The ultimate tool for educators. Save time, reduce effort, and create professional, customized question papers in minutes.</p>
+            <div class="hero-buttons">
+              <a href="{{ url_for('register') }}" class="btn btn-lg btn-primary shadow-sm">Get Started for Free</a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Why QPG is a Game-Changer</h2>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="feature-card">
+              <div class="feature-icon"><i class="bi bi-gear-wide-connected"></i></div>
+              <h3 class="feature-title">Highly Customizable</h3>
+              <p>Tailor papers with custom subjects, marks, and difficulty levels to fit your exact curriculum needs.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="feature-card">
+              <div class="feature-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+              <h3 class="feature-title">Fast & Efficient</h3>
+              <p>Go from setup to a downloadable PDF in just a few clicks. Our intuitive process saves you hours.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="feature-card">
+              <div class="feature-icon"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+              <h3 class="feature-title">Professional Output</h3>
+              <p>Generate clean, well-structured PDF documents ready for printing and distribution instantly.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section how-it-works">
+        <div class="container">
+            <h2 class="section-title">Three Easy Steps to a Perfect Paper</h2>
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Configure</h3>
+                        <p>Set up your exam details like subject, marks, and time.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Create</h3>
+                        <p>Add questions, assign them to sections, and review.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Generate</h3>
+                        <p>Instantly download your completed paper as a professional PDF.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
   </main>
 
-  <!-- Footer - This will appear on every page -->
+  <!-- Footer -->
   <footer class="footer mt-auto py-3 bg-white border-top">
     <div class="container text-center">
-      <span class="text-muted">
-        © {{ current_year }} Question Paper Generator System. All Rights Reserved.
-      </span>
+      <span class="text-muted">© {{ current_year }} Question Paper Generator System. All Rights Reserved.</span>
     </div>
   </footer>
 
 </body>
-
 </html>

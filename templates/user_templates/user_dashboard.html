@@ -11,15 +11,7 @@
     </div>
 </div>
 
-<!-- Search Bar (Improvement on "Search Question Paper/Dropdown list") -->
-<div class="row justify-content-center mb-5">
-    <div class="col-md-8">
-        <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search for existing question papers..." aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-    </div>
-</div>
+
 
 <!-- Main Action Cards -->
 <div class="row align-items-md-stretch">
@@ -28,7 +20,7 @@
         <div class="h-100 p-5 text-white bg-primary rounded-3">
             <h2>View Papers</h2>
             <p>Browse, view, and download previously generated question papers and previous year questions (PYQs).</p>
-            <a href class="btn btn-outline-light" type="button">View Question Papers</a>
+            <a href="{{url_for('view_question_papers')}}" class="btn btn-outline-light" type="button">View Question Papers</a>
         </div>
     </div>
     <!-- Card for Generating a new Paper -->
@@ -36,7 +28,8 @@
         <div class="h-100 p-5 bg-secondary text-white rounded-3">
             <h2>Generate New Paper</h2>
             <p>Create a brand new question paper by selecting subjects, topics, and difficulty levels.</p>
-            <a href="{{url_for('generate_question_paper')}}" class="btn btn-outline-light" type="button">Generate Question Paper</a>
+            <a href="{{url_for('generate_question_paper')}}" class="btn btn-outline-light" type="button">Generate
+                Question Paper</a>
         </div>
     </div>
 </div>

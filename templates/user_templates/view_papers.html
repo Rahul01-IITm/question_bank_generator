@@ -1,0 +1,31 @@
+{% extends 'user_templates/base.html' %}
+
+{% block title %}View Question Papers{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">View Question Papers</h2>
+
+    <!-- Search bar -->
+    <form class="d-flex mb-4" method="GET" action="#">
+        <input class="form-control me-2" type="search" name="query" placeholder="Search question papers..." value="{{ query or '' }}">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+
+    {% if results %}
+        <ul class="list-group">
+            {% for paper in results %}
+                <li class="list-group-item">
+                    <strong>{{ paper.title }}</strong> <br>
+                    Subject: {{ paper.subject.name }} <br>
+                    Total Marks: {{ paper.total_marks }} | Time: {{ paper.time_allotted }} mins
+                    <br>
+                    <a href="{{url_for('download_question_paper',paper_id = paper.id)}}" class="btn btn-sm btn-primary mt-2">View Paper</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted mt-4">No question papers found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -24,6 +24,26 @@ def user_dashboard():
     return render_template('user_templates/user_dashboard.html', user=user, current_year=datetime.now().year)
 
 
+@app.route('/view_papers', methods=['GET'])
+@userlogin_required
+def view_question_papers():
+    query = request.args.get('query', '').strip()
+    id = session.get('user_id')
+    user = User.query.get(id)
+    
+    
+    if query:
+        results = QuestionPaper.query.filter(
+            QuestionPaper.title.ilike(f"%{query}%")
+        ).all()
+    else:
+        results = QuestionPaper.query.filter_by(user_id=user.id).order_by(QuestionPaper.id.desc()).all()
+
+
+    return render_template('user_templates/view_papers.html', user=user,results=results, query=query)
+
+
+
 @app.route('/generate_question_paper', methods=['GET', 'POST'])
 @userlogin_required
 def generate_question_paper():
@@ -108,7 +128,7 @@ def display_generated_paper(paper_id):
     group_a = [q for q in linked_questions if q.marks == 2]
     group_b = [q for q in linked_questions if q.marks == 8]
 
-    # Pop the values only once for use
+    
     semester = session.get('display_semester', None)
     exam_year = session.get('display_exam_year', None)
     time_allotted = session.get('display_time_allotted', None)
@@ -143,6 +163,7 @@ def display_generated_paper(paper_id):
 @userlogin_required
 def download_question_paper(paper_id):
     paper = QuestionPaper.query.get_or_404(paper_id)
+
     linked_questions = (
         Question.query
         .join(QuestionPaperQuestion, Question.id == QuestionPaperQuestion.question_id)
@@ -150,14 +171,16 @@ def download_question_paper(paper_id):
         .all()
     )
 
-    # Render the HTML template
+    group_a = [q for q in linked_questions if q.marks == 2]
+    group_b = [q for q in linked_questions if q.marks == 8]
+
     html = render_template(
-        'user_templates/question_paper_pdf.html', 
-        paper=paper, 
-        questions=linked_questions
+        'user_templates/question_paper_pdf.html',
+        paper=paper,
+        group_a=group_a,
+        group_b=group_b
     )
 
-    # Convert HTML to PDF
     pdf_io = io.BytesIO()
     pisa_status = pisa.CreatePDF(io.StringIO(html), dest=pdf_io)
 
@@ -167,7 +190,8 @@ def download_question_paper(paper_id):
 
     pdf_io.seek(0)
     return send_file(
-        pdf_io, 
+        pdf_io,
         mimetype='application/pdf',
         download_name=f"{paper.title.replace(' ', '_')}.pdf"
     )
+

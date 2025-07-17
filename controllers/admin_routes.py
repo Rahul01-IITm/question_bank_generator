@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template,request,redirect, url_for, flash, session
 from controllers.rbac import  adminlogin_required
-from models import db, Subject, QuestionBank, Question, User 
+from models import db, Subject, QuestionBank, Question, User , QuestionPaper
 from datetime import datetime
 from sqlalchemy import func
 
@@ -19,6 +19,21 @@ def admin_dashboard():
         subjects=subjects,
         current_year=datetime.now().year
     )
+
+
+@app.route('/admin/view_all_papers', methods=['GET'])
+@adminlogin_required
+def admin_view_all_papers():
+    query = request.args.get('query', '').strip()
+
+    if query:
+        papers = QuestionPaper.query.filter(
+            QuestionPaper.title.ilike(f"%{query}%")
+        ).order_by(QuestionPaper.id.desc()).all()
+    else:
+        papers = QuestionPaper.query.order_by(QuestionPaper.id.desc()).all()
+
+    return render_template("admin_templates/view_all_papers.html", papers=papers, query=query)
 
 
 @app.route('/add_subject', methods=['GET', 'POST'])

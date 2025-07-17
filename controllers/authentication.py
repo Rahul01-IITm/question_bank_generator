@@ -106,7 +106,7 @@ def register():
             return redirect(url_for('register'))
 
     # If method is GET, just render the registration form
-    return render_template('register.html')
+    return render_template('register.html',current_year=datetime.now().year)
 
 
 @app.route('/logout', methods=["POST", "GET"])

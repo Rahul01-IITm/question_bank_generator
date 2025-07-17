@@ -205,7 +205,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
-      <a class="navbar-brand fw-semibold text-primary" href="#">Admin Panel</a>
+      <a class="navbar-brand fw-semibold text-primary" href="{{url_for('admin_dashboard')}}">Admin Panel</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -226,8 +226,9 @@
             <span class="text-muted">|</span>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-center=links" href="#">View Question Paper</a>
+            <a class="nav-link" href="{{ url_for('admin_view_all_papers') }}">View Question Papers</a>
           </li>
+
         </ul>
         <form action="{{ url_for('logout') }}" method="POST" class="d-flex">
           <button type="submit" class="btn btn-logout">Logout</button>

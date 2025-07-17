@@ -1,72 +1,193 @@
-{% extends "index.html" %}
+<!doctype html>
+<html lang="en" class="h-100">
 
-{% block title %}Register - Question Paper Generator{% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register - QPG</title>
 
-{% block styles %}
-<style>
-  /* Child-specific styles */
-  .register-container {
-    max-width: 500px;
-    margin: 6vh auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  .form-group + .form-group {
-    margin-top: 1rem;
-  }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="register-container">
-  <h1 class="text-center mb-4">Create an Account</h1>
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-
-  <form method="post" action="{{ url_for('register') }}">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email"class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="full_name">Full Name</label>
-      <input type="text" id="full_name" name="full_name" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="pin_code">PIN Code (e.g., Zip Code)</label>
-      <input type="text" id="pin_code" name="pin_code" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="confirm_password">Confirm Password</label>
-      <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100 mt-4">Register</button>
-  </form>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   
-  <p class="text-center mt-3">
-    Already have an account? <a href="{{ url_for('login') }}">Login here</a>
-  </p>
-</div>
-{% endblock %}
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --light-gray: #f8f9fa;
+      --dark-text: #1f2937;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-gray);
+      color: #374151;
+    }
+
+    .navbar-brand {
+      font-weight: 700 !important;
+      color: var(--primary-color) !important;
+    }
+
+    /* --- Registration Container Styling --- */
+    .register-container {
+      max-width: 500px;
+      margin: 4rem auto; /* Provides vertical spacing */
+      padding: 2.5rem;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .register-title {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    /* --- Form Styling --- */
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+      color: var(--primary-color); /* Change label color on focus/fill */
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.2);
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      padding: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #4338ca;
+      border-color: #4338ca;
+      transform: translateY(-2px);
+    }
+    
+    .bottom-link a {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .bottom-link a:hover {
+        text-decoration: underline;
+    }
+
+
+    /* --- Animation --- */
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body class="d-flex flex-column h-100">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand fs-4" href="/"><!-- Link to Homepage -->QPG</a>
+      <div class="ms-auto">
+        <a href="/login" class="btn btn-outline-primary me-2"><!-- Link to Login -->Login</a>
+        <a href="/register" class="btn btn-primary"><!-- Link to Register -->Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-shrink-0">
+    <div class="container">
+      <div class="register-container">
+        <h2 class="text-center mb-4 register-title">Create Your Account</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- NOTE: Replace action="#" with action="{{ url_for('register') }}" in your app -->
+        <form method="post" action="{{url_for('register')}}">
+          
+          <!-- Username -->
+          <div class="form-floating mb-3">
+            <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
+            <label for="username">Username</label>
+          </div>
+          
+          <!-- Email -->
+          <div class="form-floating mb-3">
+            <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+            <label for="email">Email Address</label>
+          </div>
+          
+          <!-- Full Name -->
+          <div class="form-floating mb-3">
+            <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Your full name" required>
+            <label for="full_name">Full Name</label>
+          </div>
+          
+          <!-- PIN Code -->
+          <div class="form-floating mb-3">
+            <input type="text" id="pin_code" name="pin_code" class="form-control" placeholder="e.g., 12345" required>
+            <label for="pin_code">PIN Code</label>
+          </div>
+          
+          <!-- Password -->
+          <div class="form-floating mb-3">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+            <label for="password">Password</label>
+          </div>
+          
+          <!-- Confirm Password -->
+          <div class="form-floating mb-3">
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm your password" required>
+            <label for="confirm_password">Confirm Password</label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 mt-3 py-2">Create Account</button>
+        </form>
+        
+        <p class="text-center mt-4 bottom-link">
+          Already have an account? 
+          <!-- NOTE: Replace href="#" with href="{{ url_for('login') }}" -->
+          <a href="{{url_for('login')}}">Login here</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3 bg-white border-top">
+    <div class="container text-center">
+      <span class="text-muted">
+        <!-- NOTE: Replace 2025 with {{ current_year }} in your app -->
+        © {{current_year}} Question Paper Generator System. All Rights Reserved.
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
