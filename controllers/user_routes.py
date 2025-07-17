@@ -61,6 +61,9 @@ def generate_question_paper():
             subject_id=subject_id,
             difficulty=difficulty,
             total_marks=total_marks,
+            semester=semester,
+            exam_year=exam_year,
+            time_allotted=int(time_allotted) if time_allotted else None,
             user_id=session.get('user_id'),
             generation_date=datetime.now(ZoneInfo("Asia/Kolkata"))
         )
@@ -106,9 +109,9 @@ def display_generated_paper(paper_id):
     group_b = [q for q in linked_questions if q.marks == 8]
 
     # Pop the values only once for use
-    semester = session.pop('display_semester', None)
-    exam_year = session.pop('display_exam_year', None)
-    time_allotted = session.pop('display_time_allotted', None)
+    semester = session.get('display_semester', None)
+    exam_year = session.get('display_exam_year', None)
+    time_allotted = session.get('display_time_allotted', None)
     total_marks = paper.total_marks
 
     if time_allotted:
