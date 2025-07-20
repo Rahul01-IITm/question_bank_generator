@@ -48,15 +48,17 @@ def view_question_papers():
 @userlogin_required
 def generate_question_paper():
     if request.method == 'POST':
-        title = request.form.get('title')
-        subject_id = request.form.get('subject_id')
-        difficulty = request.form.get('difficulty')
-        semester = request.form.get('semester')
-        exam_year = request.form.get('exam_year')
-        time_allotted = request.form.get('time_allotted')
-        total_marks = int(request.form.get('total_marks') or 0)
-        num_2marks = int(request.form.get('num_2marks') or 0)
-        num_8marks = int(request.form.get('num_8marks') or 0)
+        form_data = request.form.to_dict()
+
+        title = form_data.get('title')
+        subject_id = form_data.get('subject_id')
+        difficulty = form_data.get('difficulty')
+        semester = form_data.get('semester')
+        exam_year = form_data.get('exam_year')
+        time_allotted = form_data.get('time_allotted')
+        total_marks = int(form_data.get('total_marks') or 0)
+        num_2marks = int(form_data.get('num_2marks') or 0)
+        num_8marks = int(form_data.get('num_8marks') or 0)
 
         # Fetch questions from database
         q_2marks = Question.query.join(QuestionBank).filter(
@@ -71,11 +73,19 @@ def generate_question_paper():
             Question.marks == 8
         ).all()
 
-        if len(q_2marks) < num_2marks or len(q_8marks) < num_8marks:
-            flash("Not enough questions in the database for your selection. Please reduce the number.", "danger")
+        errors = []
+        if len(q_2marks) < num_2marks:
+            errors.append(f"{len(q_2marks)} out of {num_2marks} questions for (2-mark)")
+        if len(q_8marks) < num_8marks:
+            errors.append(f"{len(q_8marks)} out of {num_8marks} questions for (8-mark)")
+
+        if errors:
+            flash(f"Questions available: {' and '.join(errors)}", "danger")
+            session['form_data'] = form_data
             return redirect(url_for('generate_question_paper'))
 
-        # Create new question paper
+
+        # Create and save question paper
         new_paper = QuestionPaper(
             title=title,
             subject_id=subject_id,
@@ -91,25 +101,25 @@ def generate_question_paper():
         db.session.commit()
 
         # Link selected questions
-        for question in q_2marks + q_8marks:
+        for question in random.sample(q_2marks, num_2marks) + random.sample(q_8marks, num_8marks):
             db.session.add(QuestionPaperQuestion(
                 question_paper_id=new_paper.id,
                 question_id=question.id
             ))
         db.session.commit()
 
-        # Store these for display only
         session['display_semester'] = semester
         session['display_exam_year'] = exam_year
         session['display_time_allotted'] = time_allotted
 
-        # Redirect to view route to avoid POST-duplicate issues
         return redirect(url_for('display_generated_paper', paper_id=new_paper.id))
 
-    # GET - Render form
+    # GET Request
     subjects = Subject.query.order_by(Subject.name).all()
     user = User.query.get(session.get('user_id'))
-    return render_template("user_templates/generate_question_paper.html", subjects=subjects, user=user, current_year=datetime.now().year)
+    form_data = session.pop('form_data', {})
+    return render_template("user_templates/generate_question_paper.html", subjects=subjects, user=user, form_data=form_data, current_year=datetime.now().year)
+
 
 
 

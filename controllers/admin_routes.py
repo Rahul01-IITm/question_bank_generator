@@ -114,21 +114,26 @@ def edit_questionbank(question_bank_id):
 
         question = Question.query.get(question_id)
 
+        # Ensure the question exists and belongs to the correct bank
         if not question or question.question_bank_id != question_bank_id:
             flash("Invalid question selected.", "danger")
             return redirect(url_for('edit_questionbank', question_bank_id=question_bank_id))
 
         if action == 'update':
             updated_text = request.form.get(f'question_text_{question_id}', '').strip()
-            updated_difficulty = request.form.get(f'difficulty_{question_id}', '').strip()
-            updated_marks = int(request.form.get(f'marks_{question_id}', 0))
+            updated_difficulty = request.form.get(f'difficulty_{question_id}', '').strip().capitalize()
+            updated_marks = request.form.get(f'marks_{question_id}', '').strip()
 
-            if not updated_text or updated_difficulty not in ['Easy', 'Medium', 'Hard'] or updated_marks not in [2, 8]:
+            # Validate difficulty and marks
+            valid_difficulties = ['Easy', 'Medium', 'Hard']
+            valid_marks = ['2', '8']
+
+            if not updated_text or updated_difficulty not in valid_difficulties or updated_marks not in valid_marks:
                 flash("Invalid data for question update.", "warning")
             else:
                 question.text = updated_text
                 question.difficulty = updated_difficulty
-                question.marks = updated_marks
+                question.marks = int(updated_marks)
                 db.session.commit()
                 flash("Question updated successfully.", "success")
 
@@ -139,11 +144,14 @@ def edit_questionbank(question_bank_id):
 
         return redirect(url_for('edit_questionbank', question_bank_id=question_bank_id))
 
-    questions = Question.query.filter_by(question_bank_id=question_bank_id).all()
+    # Fetch all questions in the bank
+    questions = Question.query.filter_by(question_bank_id=question_bank.id).all()
     return render_template('admin_templates/edit_questionbank.html',
                            question_bank=question_bank,
                            subject=subject,
-                           questions=questions,current_year=datetime.now().year)
+                           questions=questions,
+                           current_year=datetime.now().year)
+
 
 
 

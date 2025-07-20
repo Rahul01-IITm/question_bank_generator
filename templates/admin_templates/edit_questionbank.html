@@ -27,9 +27,9 @@
             <div class="col-md-6 mb-3">
               <label for="difficulty_{{ q.id }}" class="form-label fw-bold">Difficulty</label>
               <select name="difficulty_{{ q.id }}" id="difficulty_{{ q.id }}" class="form-select" required>
-                <option value="Easy" {% if q.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
-                <option value="Medium" {% if q.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
-                <option value="Hard" {% if q.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                <option value="Easy" {% if q.difficulty|lower == 'easy' %}selected{% endif %}>Easy</option>
+                <option value="Medium" {% if q.difficulty|lower == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="Hard" {% if q.difficulty|lower == 'hard' %}selected{% endif %}>Hard</option>
               </select>
             </div>
 
